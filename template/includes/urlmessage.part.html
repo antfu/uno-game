@@ -1,0 +1,28 @@
+<div class="url message transition hidden">
+<a class="clear button" onclick="urlmessage.clear()"><i class="icon remove"></i></a>
+<span class="message">Messages form url</span>
+</div>
+
+<script>
+var urlmessage = {};
+urlmessage.display = function(msg,color,timeout) {
+    $('.url.message .message').html(msg);
+    $('.url.message').transition('swing down in');
+    setTimeout(urlmessage.clear,4000);
+}
+urlmessage.clear = function()
+{
+    if (!$('.url.message').hasClass('hidden'))
+        $('.url.message').transition('swing down out');
+}
+urlmessage.read = function()
+{
+    var msg = get_url_parameter('msg');
+    if (!msg) return;
+    msg = msg[0].toUpperCase() + msg.slice(1).toLowerCase();
+    urlmessage.display(msg.replace(/_/g,' '));
+}
+$(function(){
+    urlmessage.read();
+});
+</script>

@@ -2,13 +2,13 @@
 # @Author: Anthony
 # @Date:   2016-04-03 00:16:35
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 13:25:04
+# @Last Modified time: 2016-04-05 01:12:46
 
 import json
 import tornado.websocket
 from room import rooms
 
-class websocket_handler(tornado.websocket.WebSocketHandler):
+class ws_player(tornado.websocket.WebSocketHandler):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
         self.room = None

@@ -15,8 +15,14 @@
     <a class="section" href="{{root}}/room/{{room.name}}/options">Options</a>
   </div>
   <br>
-  {% include 'includes/info.table.part.html' %}
-  <h2>Join the Room</h2>
+  {% include includes/urlmessage.part.html %}
+  {% include includes/info.table.part.html %}
+  <h3 class="ui inverted header">
+    Join the Room
+    <div class="sub header">
+    Enter a name below and join
+    </div>
+  </h3>
   <div class="ui small fluid action input" style="margin-bottom:1em;">
     <input type="text" id="player_name_input" maxlength="12" placeholder="Enter your name here">
     <div class="ui compact button" id="join">
@@ -36,9 +42,9 @@ function update_input()
   basic_name = name_normalize(name_input.val());
   pretty_name = name_prettify(basic_name);
   if (name_vaild(basic_name))
-    $('#join').removeClass('disabled').addClass('teal').text('Join as "'+pretty_name+'"');
+    $('#join').removeClass('disabled').addClass('blue').text('Join as "'+pretty_name+'"');
   else
-    $('#join').addClass('disabled').removeClass('teal').text('Join');
+    $('#join').addClass('disabled').removeClass('blue').text('Join');
 }
 function button_press()
 {

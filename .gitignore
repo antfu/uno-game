@@ -2,4 +2,4 @@ __pycache__/
 .idea/
 .ipynb_checkpoints/
 *.log
-debug
+config_override.py

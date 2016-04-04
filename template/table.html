@@ -21,10 +21,8 @@
       Refresh
     </div>
     <br><br>
-    <a class="ui tiny inverted button"
-         name="loading_overlay_button"
-         href="{{root}}/">
-      Back to lobby
+    <a name="loading_overlay_button" href="{{root}}/">
+      <i class="icon right angle"></i> Back to lobby
     </a>
     </div>
   </div>
@@ -59,25 +57,26 @@
 
 <!--Function Panel-->
 <div class="float function panel" style="z-index:100">
-  <div class="ui inverted secondary pointing icon four item menu" id="head_menu" style="margin:0;background: #111;">
-    <a class="item" name="tab" tab="chat" id="tab_chat" onclick="refresh_message_notifier(0)">
+  <div class="ui inverted secondary pointing icon function menu" id="head_menu">
+    <a class="fitted item" name="tab" tab="chat" id="tab_chat" onclick="refresh_message_notifier(0)">
       <i class="large icon comments"></i>
       <div id="message_notifier" class="floating small ui red label"
            style="margin-top:1.5em !important;margin-left:-2.5em !important;"></div>
     </a>
-    <a class="item" name="tab" tab="scoreboard" id="tab_scoreboard">
-      <i class="large icon ordered list"></i>
-    </a>
-    <a class="item" name="tab" tab="info" id="tab_info">
-      <i class="large icon info"></i>
-    </a>
-    <a class="item" name="tab" tab="options" id="tab_options">
+    <a class="fitted item" name="tab" tab="options" id="tab_options">
       <i class="large icon setting"></i>
     </a>
+    <div class="right action menu">
+      <div class="item countdown display" id="countdown_timer"></div>
+      <div class="item" id="button_drawone" onclick="send_message('drawone')">Draw</div>
+      <div class="item" id="button_punish" onclick="send_message('accept_punish')">Punish</div>
+      <div class="item" id="button_pass" onclick="send_message('pass')">Pass</div>
+      <div class="item" id="button_auto" onclick="send_message('auto')">Auto</div>
+    </div>
   </div>
 
   <div class="ui inverted tab segment" name="tab_page" tab="chat">
-    <div style="position: absolute;bottom:0;left:0;right:0;padding:1em;background:#111;">
+    <div style="position: absolute;bottom:0;left:0;right:0;padding:1em;background:#222;">
     <div class="ui transparent inverted left icon fluid input" id="send_input_div">
         <i class="icon send "></i>
         <input type="text" id="send_input" placeholder="Enter Message..." autocomplete=off>
@@ -86,62 +85,79 @@
     <div class="vertical scroll" id="messages_pool" style="padding-bottom:2.5em;max-height:55%"></div>
   </div>
 
-  <div class="ui inverted tab segment" name="tab_page" tab="scoreboard">
-    <h3 class="ui inverted header">
-      Scoreboard
-      <div class="sub header">Games Played:<span id="games_played">{{room.games_played}}</span></div>
-    </h3>
-    <table class="ui inverted unstackable very basic table">
-      <thead>
-        <tr><th>Player</th><th class="right aligned">Last</th><th class="right aligned">Wins</th><th class="right aligned">Total</th></tr>
-      </thead>
-      <tbody id="scoreboard_players_list">
-      </tbody>
-    </table>
-  </div>
-
-  <div class="ui inverted tab segment" name="tab_page" tab="info">
-    {% include 'includes/info.table.part.html' %}
-  </div>
-
-
   <div class="ui inverted tab segment" name="tab_page" tab="options">
-    <h4>Navigation</h4>
-    <div class="ui inverted breadcrumb">
-      <a class="section" href="{{root}}/">Lobby</a>
-      <div class="divider"> / </div>
-      <a class="section" href="{{root}}/room/{{room.name}}">{{room.display_name}}</a>
-      <div class="divider"> / </div>
-      <div class="active section">{{player.display_name}}</div>
-      <i class="right angle icon divider"></i>
-      <a class="section" href="{{root}}/room/{{room.name}}/options">Options</a>
-    </div>
+    <h4 class="ui compact header">
+      Options
+      <div class="sub header" style="margin-top:0.4em">
+        <div id="check_sound" class="ui small compact inverted disabled toggleable button"
+             data-inactive="No Sound" data-active="Sound" data-cookies-key="sound"></div>
+        <div id="check_auto" class="ui small compact inverted toggleable button">Autoplay</div>
+      </div>
+    </h4>
 
-    <h4>Options</h4>
-    <div class="ui inverted compact basic button" id="button_start" onclick="send_message('start')">Start</div>
-    <div id="check_sound" class="ui compact inverted disabled toggleable button"
-         data-inactive="No Sound" data-active="Sound" data-cookies-key="sound"></div>
-    <div id="check_auto" class="ui compact inverted toggleable button">Autoplay</div>
+    <h4 class="ui compact header">
+      Navigation
+      <div class="sub header" style="margin-top:0.4em">
+        <div class="ui inverted breadcrumb">
+          <a class="section" href="{{root}}/">Lobby</a>
+          <div class="divider"> / </div>
+          <a class="section" href="{{root}}/room/{{room.name}}">{{room.display_name}}</a>
+          <div class="divider"> / </div>
+          <div class="active section">{{player.display_name}}</div>
+          <i class="right angle icon divider"></i>
+          <a class="section" href="{{root}}/room/{{room.name}}/options">Options</a>
+        </div>
+      </div>
+    </h4>
+
+    {% include 'includes/info.table.part.html' %}
+
+    <div class="ui accordion">
+      <div class="title">
+        <h4 class="ui inverted header">
+          <i class="icon dropdown"></i>
+          Scoreboard
+        </h4>
+      </div>
+      <div class="content">
+        <p>Games Played:<span id="games_played">{{room.games_played}}</span></p>
+        <table class="ui inverted unstackable very basic table">
+          <thead>
+            <tr><th>Player</th><th class="right aligned">Last</th><th class="right aligned">Wins</th><th class="right aligned">Total</th></tr>
+          </thead>
+          <tbody id="scoreboard_players_list">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="float center waiting panel">
+  <div class="uno cards ground">
+    <img class="uno card" src="/static/cards/SD4.png" repr="SD4">
+    <img class="uno card" src="/static/cards/B4.png"  repr="B4">
+    <img class="uno card" src="/static/cards/G3.png"  repr="G3">
+    <img class="uno card" src="/static/cards/Y2.png"  repr="Y2">
+    <img class="uno card" src="/static/cards/R1.png"  repr="R1">
+  </div>
+  <div class="text">
+    <p>Waiting for game to start...<p>
+    <div class="ui inverted small compact button" name="button_start"
+         onclick="send_message('start')" style="margin-top:-1em;">
+         Start
+    </div>
+  </div>
+</div>
+
+<div class="float center">
+  <div class="turns list" id="candidates_list"></div>
+  <div style="width:12em;margin:0 auto">
+    <div class="uno cards ground" id="cards_ground"></div>
   </div>
 </div>
 
 <div class="float hand">
-  <div class="turns list" id="candidates_list"></div>
-  <div class="ui grid" style="max-width:40em;margin:auto">
-    <div class="eleven wide column" style="padding:0">
-      <div class="uno cards ground" id="cards_ground"></div>
-    </div>
-    <div class="four wide column" style="padding:0">
-      <h2 class="ui inverted header" id="countdown_timer"></h2>
-      <div class="ui inverted vertical compact icon menu" id="action_menu">
-        <div class="item" id="button_wait"><i class="icon wait"></i></div>
-        <div class="item" id="button_drawone" onclick="send_message('drawone')" style="cursor:pointer;">Draw</div>
-        <div class="item" id="button_punish" onclick="send_message('accept_punish')" style="cursor:pointer;">Punish</div>
-        <div class="item" id="button_pass" onclick="send_message('pass')" style="cursor:pointer;"><i class="icon right arrow"></i></div>
-        <div class="item" id="button_auto" onclick="send_message('auto')" style="cursor:pointer;">Auto</div>
-      </div>
-    </div>
-  </div><br>
   <div class="horzontial scroll" id="horzontial_scroller" style="margin-top:-1em">
     <div class="uno cards stack hand" id="hand_pool"></div>
   </div>
@@ -301,7 +317,6 @@ function turn_others(turns)
   $('#button_drawone').hide();
   $('#button_pass').hide();
   $('#button_auto').hide();
-  $('#button_wait').show()
   // Dim the hand cards
   $('#hand_pool').addClass('dim');
   // Set flag
@@ -320,7 +335,6 @@ function turn_my(punish_stack,punish_level,drawable)
   $('#button_drawone').hide();
   $('#button_pass').hide();
   $('#button_auto').hide();
-  $('#button_wait').hide();
   // Update punishment display
   set_punish(punish_stack,punish_level);
   // Set the timeout
@@ -353,12 +367,11 @@ function turn_nobody()
   $('#button_drawone').hide();
   $('#button_pass').hide();
   $('#button_auto').hide();
-  $('#button_wait').hide();
   set_prev_color(0);
   set_countdown(0);
-  update_ground(['SD4','B4','G3','Y2','R1']);
+  update_ground([]);
   update_hand_cards([]);
-  candidates_list.html('<span>Waiting for game start...</span>');
+  candidates_list.html('');
 }
 function player_join(player) {
   display_info(player+' joined.');
@@ -368,6 +381,7 @@ function player_left(player) {
 }
 function game_start()
 {
+  $('.waiting.panel').transition('fade out');
   display_info('Game start!');
   update_ground([]);
   if (!$('#gameover_overlay').hasClass('transition hidden'))
@@ -376,6 +390,7 @@ function game_start()
 function game_over(winner)
 {
   turn_nobody();
+  $('.waiting.panel').transition('fade in');
   $('#gameover_overlay [name=winner]').text(winner);
   $('#gameover_overlay').transition('fade in');
   $('#gameover_overlay [name=inner]').transition('tada')
@@ -388,16 +403,15 @@ function upadte_candidates(player_names) {
     if (n.length == 1)
       candidates_list.append('<span>'+n[0]+'</span>');
     else if (n[1] == 1)
-      candidates_list.append('<span>'+n[0]+'<sup style="font-weight:bold;color:#E9BB29">UNO</sup></span>');
+      candidates_list.append('<span>'+n[0]+'<sup class="candidates uno">Uno</sup></span>');
     else
-      candidates_list.append('<span>'+n[0]+'<sup>'+n[1]+'</sup></span>');
+      candidates_list.append('<span>'+n[0]+'<sup class="candidates">'+n[1]+'</sup></span>');
   });
 }
 function set_prev_color(color_id)
 {
-  color = ['','red','yellow','blue','green'][color_id];
-  $('#action_menu').removeClass('red yellow blue green').addClass(color);
-  $('#head_menu').removeClass('red yellow blue green').addClass(color);
+  color = ['','back_red','back_yellow','back_blue','back_green'][color_id];
+  $('#head_menu').removeClass('back_red back_yellow back_blue back_green').addClass(color);
 }
 function to_table_row(row) {
   var r = '<tr>';
@@ -436,29 +450,29 @@ function update_game_info(infos)
 function upadte_game_ready(game_ready,game_state_str,game_ready_players)
 {
   if (msg.game_ready)
-    $('#button_start').removeClass('disabled').addClass('green').text('Start ('+game_ready_players+')');
+    $('[name=button_start]').removeClass('disabled').addClass('green').text('Start ('+game_ready_players+')');
   else
-    $('#button_start').addClass('disabled').removeClass('green').text(game_state_str);
-  $('#game_infos_panel [name=game_state_str]').text(game_state_str);
+    $('[name=button_start]').addClass('disabled').removeClass('green').text(game_state_str);
+  infos_panel.game_state(game_state_str);
 }
 function set_countdown(seconds,func)
 {
   countdown_num = seconds;
   countdown_func = func;
   if (countdown_num <= 0)
-    countdown_timer.text('');
+    countdown_timer.html('');
   if (!countdown_run)
     countdown_loop();
 }
 function countdown_loop()
 {
   countdown_run = true;
-  countdown_timer.text(countdown_num);
+  countdown_timer.html('<i class="icon wait"></i> '+countdown_num);
   countdown_num--;
   if (countdown_num <= 0)
   {
     countdown_run = false;
-    countdown_timer.text('');
+    countdown_timer.html('');
     if (countdown_func)
       countdown_func();
   }
@@ -500,6 +514,7 @@ function ws_on_open()
   $('#loading_overlay').transition('fade out');
   if ({{room.state}} != 0)
   {
+    $('.waiting.panel').addClass('transition hidden');
     send_message('recover');
   }
 }
@@ -548,7 +563,7 @@ function handle_message(msg)
   if (msg.game_infos != undefined)  update_game_info(msg.game_infos);
   if (msg.scoreboard != undefined)  update_scoreboard(msg.games_played,msg.scoreboard);
   if (msg.gameover_scoreboard != undefined)  update_gameover_scoreboard(msg.gameover_scoreboard);
-  if (msg.players_online_list != undefined)  $('#game_infos_panel [name=players_online_list]').text(msg.players_online_list);
+  if (msg.players_online_list != undefined)  infos_panel.players_online(msg.players_online_list);
 
   if (msg.turns != undefined)       turn_others(msg.turns);
   if (msg.myturn != undefined)      turn_my(msg.punish_stack,msg.punish_level,msg.drawable);
@@ -561,7 +576,7 @@ function handle_message(msg)
   if (msg.player_joined != undefined)   player_join(msg.player_joined);
   if (msg.player_left != undefined)     player_left(msg.player_left);
 
-  if (msg.game_start != undefined)      game_start(msg.winner);
+  if (msg.gamestart != undefined)      game_start();
   if (msg.gameover != undefined)        game_over(msg.winner);
 }
 

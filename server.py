@@ -2,12 +2,14 @@
 # @Author: Anthony
 # @Date:   2016-03-30 12:48:58
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 16:40:46
+# @Last Modified time: 2016-04-05 02:19:44
 
+import sys
 import json
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
+import tornado.options
 import room
 import websocket
 from   configs.config   import configs
@@ -55,7 +57,7 @@ class create_handler(base_handler):
             else:
                 r = rooms.create_room(room_name)
                 if r:
-                    self.redirect_param('/room/'+room_name,msg='create_success')
+                    self.redirect_param('/room/'+room_name)
                 else:
                     self.redirect_param('/',room=room_name,error=repr(r))
 
@@ -94,6 +96,13 @@ class player_handler(base_room_handler):
         else:
             self.redirect_param('/room/'+room_name,msg=repr(p))
 
+class not_found_handler(base_room_handler):
+    def get(self):
+        self.render('404.html')
+
+args = sys.argv
+args.append("--log_file_prefix=logs/web.log")
+tornado.options.parse_command_line()
 app = tornado.web.Application(
     handlers=[
         (r'/',lobby_handler),
@@ -104,7 +113,8 @@ app = tornado.web.Application(
         (r'/room/(\w+)/close',room_close_handler),
         (r'/room/(\w+)/restart',room_restart_handler),
         (r'/room/(\w+)/player/(\w+)',player_handler),
-        (r'/room/(\w+)/player/(\w+)/ws',websocket.websocket_handler)
+        (r'/room/(\w+)/player/(\w+)/ws',websocket.ws_player),
+        (r'.*',not_found_handler)
     ],
     template_path='template',
     static_path='static',

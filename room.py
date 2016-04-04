@@ -2,11 +2,12 @@
 # @Author: Anthony
 # @Date:   2016-03-30 02:56:17
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 19:42:34
+# @Last Modified time: 2016-04-05 01:35:22
 
 import uno
 import json
 import time
+from   configs.config   import configs
 from uno import default_rules
 from utils import set_timeout
 from utils import NoneGet as NG
@@ -498,7 +499,9 @@ class MessagePipe:
 class RoomManager:
     def __init__(self):
         self.rooms = {}
-        self.max_limit = 3
+        self.max_limit = configs.room_max_limit
+        for name in configs.default_rooms:
+            self.create_room(name)
 
     @property
     def public_rooms(self):

@@ -1,37 +1,30 @@
-<div id="game_infos_panel" style="padding-top:1em;">
-<h3 class="ui inverted header">
-  State <div class="ui blue label" name="game_state_str">{{room.state_str}}</div>
-</h3>
-<h3 class="ui inverted header" style="margin-top:0em;margin-bottom:1em;">
+<h4 class="ui inverted compact header">
+  State
+  <div class="sub header" style="margin-top:0.4em">
+    <div class="ui tiny inverted compact button" info="game_state_str" style="pointer-events:none;"></div>
+  </div>
+</h4>
+<h4 class="ui inverted compact header">
   Players
-  <div class="sub header" name="players_online_list">
+  <p class="sub header" info="players_online_list">
     {{room.get_players_str(None,'online') or 'Nobody'}}
-  </div>
-</h3>
-<!--
-<div class="ui accordion">
-  <div class="title">
-    <h3 class="ui inverted header">
-      <div class="content">
-        Rules
-        <div class="sub header">
-        Toggle to view the rules of the Room
-        </div>
-      </div>
-    </h3>
-  </div>
-  <div class="content">
-    <table class="ui inverted unstackable very basic table">
-      <tbody>
-      <tr><td>Players Limit</td>
-      <td>
-        Min:<span name="min_players">{{room.min_players}}</span>,
-        Max:<span name="max_players">{{room.max_players}}</span>
-      </td></tr>
-      <tr><td>Cards Dealt</td><td>{{room.rules['cards_dealt']}}</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>-->
-</div>
+  </p>
+</h4>
+
+<script>
+var infos_panel = {};
+infos_panel.game_state = function(game_start_str)
+{
+  var targets = $('[info="game_state_str"]').text(game_start_str).removeClass('orange yellow red blue teal green olive');
+  if (game_start_str=='Matching')       targets.addClass('yellow');
+  else if (game_start_str=='Ready')     targets.addClass('green');
+  else if (game_start_str=='Gaming')    targets.addClass('blue');
+  else if (game_start_str=='Full')      targets.addClass('orange');
+}
+infos_panel.players_online = function(players_online_list)
+{
+  $('[info="players_online_list"').text(players_online_list);
+}
+infos_panel.game_state('{{room.state_str}}');
+</script>
 
