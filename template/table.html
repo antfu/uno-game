@@ -182,7 +182,8 @@ var countdown_run = false;
 
 /* WebSocket */
 var socket = undefined;
-var socket_url = 'ws:'+window.location.href.split(':')[1]+'/ws';
+var socket_protocol = window.location.protocol == 'https:' ? 'wss:' : 'ws:';
+var socket_url = socket_protocol+window.location.href.split(':')[1]+'/ws';
 var connect_trys = 0;
 
 /*=== Cards =============================================*/
