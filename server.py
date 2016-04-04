@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 12:48:58
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 15:28:15
+# @Last Modified time: 2016-04-04 16:40:46
 
 import json
 import tornado.web
@@ -13,34 +13,51 @@ import websocket
 from   configs.config   import configs
 from room import rooms
 
-class base_room_handler(tornado.web.RequestHandler):
+class base_handler(tornado.web.RequestHandler):
+    def get_template_namespace(self):
+        ns = super(base_handler, self).get_template_namespace()
+        ns.update({
+            'root': configs.root,
+        })
+        return ns
+
+    def redirect(self,url):
+        super().redirect(configs.root+url)
+
+    def redirect_param(self,url,**params):
+        if params:
+            self.redirect(url+'?'+'&'.join(['%s=%s' % (k,v) for k,v in params.items()]))
+        else:
+            self.redirect(url)
+
+class base_room_handler(base_handler):
     def get_room(self,room_name,player_name=None):
         if not rooms.has_room(room_name):
             if player_name is None:
-                self.redirect('/create?room=%s&msg=room_not_exist' % room_name)
+                self.redirect_param('/create',room=room_name,msg='room_not_exist')
             else:
-                self.redirect('/create?room=%s&player%s&msg=room_not_exist' % (room_name,player_name))
+                self.redirect_param('/create',room=room_name,msg='room_not_exist',player=player_name)
             return False
         self.room = rooms.get_room(room_name)
         return self.room
 
-class lobby_handler(tornado.web.RequestHandler):
+class lobby_handler(base_handler):
     def get(self):
         self.render('lobby.html',rooms=rooms)
 
-class create_handler(tornado.web.RequestHandler):
+class create_handler(base_handler):
     def get(self,room_name=None):
         if room_name is None:
             self.render('create.html')
         else:
             if rooms.has_room(room_name):
-                self.redirect('/room/%s?msg=room_already_exist' % room_name)
+                self.redirect_param('/room/'+room_name,msg='room_already_exist')
             else:
                 r = rooms.create_room(room_name)
                 if r:
-                    self.redirect('/room/%s?msg=create_success' % room_name)
+                    self.redirect_param('/room/'+room_name,msg='create_success')
                 else:
-                    self.redirect('/?room=%s&error=%s' % (room_name,repr(r)))
+                    self.redirect_param('/',room=room_name,error=repr(r))
 
 class room_handler(base_room_handler):
     def get(self,room_name):
@@ -56,16 +73,16 @@ class room_close_handler(base_room_handler):
     def get(self,room_name):
         result = rooms.close_room(room_name)
         if result:
-            self.redirect('/?msg=room_close_successful')
+            self.redirect_param('/',msg='room_close_successful')
         else:
-            self.redirect('/?msg=room_close_failed')
+            self.redirect_param('/',msg='room_close_failed')
 
 
 class room_restart_handler(base_room_handler):
     def get(self,room_name):
         if not self.get_room(room_name): return
         # TODO
-        self.redirect('/room/%s' % room_name)
+        self.redirect('/room/'+room_name)
 
 
 class player_handler(base_room_handler):
@@ -75,7 +92,7 @@ class player_handler(base_room_handler):
         if p:
             self.render('table.html',room=self.room,player=p)
         else:
-            self.redirect('/room/%s?msg=%s' % (room_name,repr(p)))
+            self.redirect_param('/room/'+room_name,msg=repr(p))
 
 app = tornado.web.Application(
     handlers=[

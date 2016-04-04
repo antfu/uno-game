@@ -1,18 +1,18 @@
+{% set myname = globals().get('root', '') %}
 <!DOCTYPE>
 <html>
 <head>
 <title>{% block full_title %}{% block title %}{% end %} - UNO GAME{% end %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel='shortcut icon' type='image/x-icon' href='/static/favicon.ico' />
-<script src="{{ static_url("js/jquery.min.js") }}"></script>
-<script src="{{ static_url("js/js.cookie.js") }}"></script>
-<script src="{{ static_url("js/utils.js") }}"></script>
-<script src="{{ static_url("js/toggleable.button.js") }}"></script>
-<script src="{{ static_url("semantic/semantic.min.js") }}"></script>
+<script src="{{root}}{{ static_url("js/jquery.min.js") }}"></script>
+<script src="{{root}}{{ static_url("js/js.cookie.js") }}"></script>
+<script src="{{root}}{{ static_url("js/utils.js") }}"></script>
+<script src="{{root}}{{ static_url("js/toggleable.button.js") }}"></script>
+<script src="{{root}}{{ static_url("semantic/semantic.min.js") }}"></script>
 {% block meta %}{% end %}
-<link rel="stylesheet" type="text/css" href="{{ static_url("semantic/semantic.min.css") }}">
-<link rel="stylesheet" type="text/css" href="{{ static_url("style.css") }}">
-<link rel="stylesheet" type="text/css" href="{{ static_url("phonecase.css") }}">
+<link rel="stylesheet" type="text/css" href="{{root}}{{ static_url("semantic/semantic.min.css") }}">
+<link rel="stylesheet" type="text/css" href="{{root}}{{ static_url("style.css") }}">
 </head>
 <body>
 {% block content %}

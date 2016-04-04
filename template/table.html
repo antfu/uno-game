@@ -23,7 +23,7 @@
     <br><br>
     <a class="ui tiny inverted button"
          name="loading_overlay_button"
-         href="/">
+         href="{{root}}/">
       Back to lobby
     </a>
     </div>
@@ -106,13 +106,13 @@
   <div class="ui inverted tab segment" name="tab_page" tab="options">
     <h4>Navigation</h4>
     <div class="ui inverted breadcrumb">
-      <a class="section" href="/">Lobby</a>
+      <a class="section" href="{{root}}/">Lobby</a>
       <div class="divider"> / </div>
-      <a class="section" href="/room/{{room.name}}">{{room.display_name}}</a>
+      <a class="section" href="{{root}}/room/{{room.name}}">{{room.display_name}}</a>
       <div class="divider"> / </div>
       <div class="active section">{{player.display_name}}</div>
       <i class="right angle icon divider"></i>
-      <a class="section" href="/room/{{room.name}}/options">Options</a>
+      <a class="section" href="{{root}}/room/{{room.name}}/options">Options</a>
     </div>
 
     <h4>Options</h4>
@@ -189,7 +189,7 @@ var connect_trys = 0;
 function create_card(card_repr,size)
 {
   size = size || 'normal';
-  return $('<img class="uno '+size+' card" src="/static/cards/'+card_repr+'.png" repr="'+card_repr+'"/>')
+  return $('<img class="uno '+size+' card" src="{{root}}/static/cards/'+card_repr+'.png" repr="'+card_repr+'"/>')
 }
 function add_to_ground(card_repr)
 {
@@ -531,7 +531,7 @@ function send_message(action,obj)
 }
 function handle_message(msg)
 {
-  if (msg.action == 'kick') window.location = '/';
+  if (msg.action == 'kick') window.location = '{{root}}/';
 
   // Common Selection
   if (msg.game_ready != undefined)

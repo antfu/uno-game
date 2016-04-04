@@ -18,7 +18,7 @@
   </h2>
   <h3 style="margin-top:0.8em">
   <a onclick="location.reload()" style="margin-right:0.5em"><i class="icon refresh"></i>Refresh</a>
-  <a href="/create"><i class="icon plus"></i>Create</a>
+  <a href="{{root}}/create"><i class="icon plus"></i>Create</a>
   </h3>
   <div>
     <a class="ui inverted room disabled button">
@@ -26,7 +26,7 @@
     <span name="state">Not available for now</span>
     </a>
     {% for r in rooms.public_rooms %}
-      <a class="ui inverted room button" href="/room/{{r.name}}">
+      <a class="ui inverted room button" href="{{root}}/room/{{r.name}}">
       <span name="room_name">{{ r.display_name }}</span><br>
       <span name="state">{{ r.state_str }} {{ len(r.players_online) }}/{{ r.options['max_players'] }}</span>
       </a>

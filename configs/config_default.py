@@ -6,5 +6,6 @@ Default configurations.
 '''
 
 configs = {
-    'port' : 80
+    'port' : 80,
+    'root' : ''
 }
