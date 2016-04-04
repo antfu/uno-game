@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 02:56:17
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 18:10:02
+# @Last Modified time: 2016-04-04 19:42:34
 
 import uno
 import json
@@ -474,15 +474,17 @@ class MessagePipe:
 
     ## Should only be MessageTo
     def hand(self,player):
-        return self.append(hand=[repr(c) for c in player.hand])
+        if player.hand:
+            return self.append(hand=[repr(c) for c in player.hand])
+        else:
+            return self
 
     def myturn(self,player):
         if player.is_turn:
             return self.append(myturn=True,
                                punish_stack=self.room.game.punishment[0],
                                punish_level=self.room.game.punishment[1],
-                               drawable=player.game_player.drawable,
-                               )
+                               drawable=player.game_player.drawable)
         else:
             return self
 
