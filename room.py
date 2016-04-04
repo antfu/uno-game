@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 02:56:17
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 15:03:58
+# @Last Modified time: 2016-04-04 17:11:42
 
 import uno
 import json
@@ -80,7 +80,7 @@ class RoomPlayer:
                 self._user_action()
     def play(self,card,color=None):
         if self.game_player:
-            if self.player.game_player.play(card,color):
+            if self.game_player.play(card,color):
                 self._user_action()
 
     def _user_action(self):
