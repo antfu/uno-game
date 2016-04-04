@@ -1,0 +1,39 @@
+{% extends base.html %}
+
+{% block full_title %}UNO GAME{% end %}
+
+{% block content %}
+<div class="ui main container">
+  <h1 class="ui inverted header">
+    UNO GAME
+    <div class="sub header">
+    by Anthony Fu
+    </div>
+  </h1>
+  <h2 class="ui inverted header">
+    Rooms
+    <div class="sub header">
+    To play the game, join a room or create one.
+    </div>
+  </h2>
+  <h3 style="margin-top:0.8em">
+  <a onclick="location.reload()" style="margin-right:0.5em"><i class="icon refresh"></i>Refresh</a>
+  <a href="/create"><i class="icon plus"></i>Create</a>
+  </h3>
+  <div>
+    <a class="ui inverted room disabled button">
+    <span name="room_name">Quick Match</span><br>
+    <span name="state">Not available for now</span>
+    </a>
+    {% for r in rooms.public_rooms %}
+      <a class="ui inverted room button" href="/room/{{r.name}}">
+      <span name="room_name">{{ r.display_name }}</span><br>
+      <span name="state">{{ r.state_str }} {{ len(r.players_online) }}/{{ r.options['max_players'] }}</span>
+      </a>
+    {% end %}
+  </div>
+</div>
+{% end %}
+
+{% block script %}
+{% end %}

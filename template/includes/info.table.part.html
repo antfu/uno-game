@@ -1,0 +1,37 @@
+<div id="game_infos_panel" style="padding-top:1em;">
+<h3 class="ui inverted header">
+  State <div class="ui blue label" name="game_state_str">{{room.state_str}}</div>
+</h3>
+<h3 class="ui inverted header" style="margin-top:0em;margin-bottom:1em;">
+  Players
+  <div class="sub header" name="players_online_list">
+    {{room.get_players_str(None,'online') or 'Nobody'}}
+  </div>
+</h3>
+<!--
+<div class="ui accordion">
+  <div class="title">
+    <h3 class="ui inverted header">
+      <div class="content">
+        Rules
+        <div class="sub header">
+        Toggle to view the rules of the Room
+        </div>
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <table class="ui inverted unstackable very basic table">
+      <tbody>
+      <tr><td>Players Limit</td>
+      <td>
+        Min:<span name="min_players">{{room.min_players}}</span>,
+        Max:<span name="max_players">{{room.max_players}}</span>
+      </td></tr>
+      <tr><td>Cards Dealt</td><td>{{room.rules['cards_dealt']}}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>-->
+</div>
+

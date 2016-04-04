@@ -1,0 +1,57 @@
+{% extends base.html %}
+
+{% block title %}Join Room - {{room.display_name}}{% end %}
+
+{% block content %}
+<div class="ui main container">
+  <h1 class="ui inverted header">
+    {{room.display_name}}
+  </h1>
+  <div class="ui inverted subtitle breadcrumb">
+    <a class="section" href="/">Lobby</a>
+    <div class="divider"> / </div>
+    <a class="active section" >{{room.display_name}}</a>
+    <div class="divider"> / </div>
+    <a class="section" href="/room/{{room.name}}/options">Options</a>
+  </div>
+  <br>
+  {% include 'includes/info.table.part.html' %}
+  <h2>Join the Room</h2>
+  <div class="ui small fluid action input" style="margin-bottom:1em;">
+    <input type="text" id="player_name_input" maxlength="12" placeholder="Enter your name here">
+    <div class="ui compact button" id="join">
+      Join
+    </div>
+  </div>
+</div>
+{% end %}
+
+{% block script %}
+<script>
+var basic_name = '';
+var pretty_name = '';
+var name_input = $('#player_name_input');
+function update_input()
+{
+  basic_name = name_normalize(name_input.val());
+  pretty_name = name_prettify(basic_name);
+  if (name_vaild(basic_name))
+    $('#join').removeClass('disabled').addClass('teal').text('Join as "'+pretty_name+'"');
+  else
+    $('#join').addClass('disabled').removeClass('teal').text('Join');
+}
+function button_press()
+{
+  access_cookies('previous_name',basic_name);
+  window.location = "/room/{{room.name}}/player/"+basic_name;
+}
+name_input.on('input',update_input);
+name_input.keypress(function(e){if(e.keyCode==13) button_press();});
+
+$('#join').on('click',button_press);
+
+var default_name = get_url_parameter('name') || access_cookies('previous_name') || '';
+name_input.val(default_name);
+update_input()
+</script>
+{% end %}

@@ -1,0 +1,27 @@
+{% extends base.html %}
+
+{% block title %}Room Options - {{room.display_name}}{% end %}
+
+{% block content %}
+<div class="ui main container">
+  <h1 class="ui inverted header">
+    Options
+  </h1>
+  <div class="ui inverted subtitle breadcrumb">
+    <a class="section" href="/">Lobby</a>
+    <div class="divider"> / </div>
+    <a class="section" href="/room/{{room.name}}">{{room.display_name}}</a>
+    <div class="divider"> / </div>
+    <div class="active section">Options</div>
+  </div>
+
+  <h3>Controls</h3>
+  <a class="ui inverted orange compact button" href="/room/{{room.name}}/restart">Force Restart</a>
+  <a class="ui inverted red compact button" href="/room/{{room.name}}/close">Close Room</a>
+  <br>
+  {% include 'includes/options.part.html' %}
+</div>
+{% end %}
+
+{% block script %}
+{% end %}

@@ -1,0 +1,586 @@
+{% extends base.html %}
+
+{% block title %}Room {{room.display_name}}{% end %}
+
+{% block meta %}
+<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+{% end %}
+
+{% block content %}
+<div class="mobile frame">
+
+<!--Loading Overlay-->
+<div class="float overlay" id="loading_overlay">
+  <div class="ui active dimmer">
+    <div class="ui large text loader">
+    <span id="loading_overlay_text">Connecting</span>
+    <br><br>
+    <div class="ui tiny inverted button"
+         name="loading_overlay_button"
+         onclick="location.reload()">
+      Refresh
+    </div>
+    <br><br>
+    <a class="ui tiny inverted button"
+         name="loading_overlay_button"
+         href="/">
+      Back to lobby
+    </a>
+    </div>
+  </div>
+</div>
+
+<!--Hints Overlay-->
+<div class="float overlay transition hidden" id="gameover_overlay"
+     style="z-index:1000;background:rgba(0,0,0,0.75)!important;overflow:auto;padding-bottom:3em;
+}">
+  <div style="margin-top:30%" name="inner">
+    <div class="gameover title">Gameover!</div>
+    <div class="gameover sub title">Winner: <span name="winner"></span></div>
+    <table style="display:inline;" class="ui inverted unstackable very basic collapsing table">
+      <thead>
+        <tr><th>Player</th><th class="right aligned">Cards</th><th class="right aligned">Score</th><th class="right aligned">Total</th></tr>
+      </thead>
+      <tbody id="gameover_scoreboard_list">
+      </tbody>
+    </table>
+    <br>
+    <div class="ui inverted button" onclick="$('#gameover_overlay').transition('fade out')">Close</div>
+  </div>
+</div>
+
+<!--Color Select Overlay-->
+<div class="float overlay transition hidden" id="color_select_overlay" style="z-index:500;background:rgba(0,0,0,0.8) !important;" onclick="color_select_cancel()">
+  <div class="circle color button" style="background-color:#ff5555;right:6em;bottom:6em;" onclick="color_select_play(1)"></div>
+  <div class="circle color button" style="background-color:#ffaa00;right:6em;bottom:2em;" onclick="color_select_play(2)"></div>
+  <div class="circle color button" style="background-color:#55afff;right:2em;bottom:6em;" onclick="color_select_play(3)"></div>
+  <div class="circle color button" style="background-color:#55aa55;right:2em;bottom:2em;" onclick="color_select_play(4)"></div>
+</div>
+
+<!--Function Panel-->
+<div class="float function panel" style="z-index:100">
+  <div class="ui inverted secondary pointing icon four item menu" id="head_menu" style="margin:0;background: #111;">
+    <a class="item" name="tab" tab="chat" id="tab_chat" onclick="refresh_message_notifier(0)">
+      <i class="large icon comments"></i>
+      <div id="message_notifier" class="floating small ui red label"
+           style="margin-top:1.5em !important;margin-left:-2.5em !important;"></div>
+    </a>
+    <a class="item" name="tab" tab="scoreboard" id="tab_scoreboard">
+      <i class="large icon ordered list"></i>
+    </a>
+    <a class="item" name="tab" tab="info" id="tab_info">
+      <i class="large icon info"></i>
+    </a>
+    <a class="item" name="tab" tab="options" id="tab_options">
+      <i class="large icon setting"></i>
+    </a>
+  </div>
+
+  <div class="ui inverted tab segment" name="tab_page" tab="chat">
+    <div class="vertical scroll" id="messages_pool" style="margin-bottom:1em;max-height:55%"></div>
+    <div class="ui transparent inverted left icon fluid input" id="send_input_div">
+        <i class="icon send "></i>
+        <input type="text" id="send_input" placeholder="Enter Message..." autocomplete=off>
+    </div>
+  </div>
+
+  <div class="ui inverted tab segment" name="tab_page" tab="scoreboard">
+    <h3 class="ui inverted header">
+      Scoreboard
+      <div class="sub header">Games Played:<span id="games_played">{{room.games_played}}</span></div>
+    </h3>
+    <table class="ui inverted unstackable very basic table">
+      <thead>
+        <tr><th>Player</th><th class="right aligned">Last</th><th class="right aligned">Wins</th><th class="right aligned">Total</th></tr>
+      </thead>
+      <tbody id="scoreboard_players_list">
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ui inverted tab segment" name="tab_page" tab="info">
+    {% include 'includes/info.table.part.html' %}
+  </div>
+
+
+  <div class="ui inverted tab segment" name="tab_page" tab="options">
+    <h4>Navigation</h4>
+    <div class="ui inverted breadcrumb">
+      <a class="section" href="/">Lobby</a>
+      <div class="divider"> / </div>
+      <a class="section" href="/room/{{room.name}}">{{room.display_name}}</a>
+      <div class="divider"> / </div>
+      <div class="active section">{{player.display_name}}</div>
+      <i class="right angle icon divider"></i>
+      <a class="section" href="/room/{{room.name}}/options">Options</a>
+    </div>
+
+    <h4>Options</h4>
+    <div class="ui inverted compact basic button" id="button_start" onclick="send_message('start')">Start</div>
+    <div id="check_sound" class="ui compact inverted disabled toggleable button"
+         data-inactive="No Sound" data-active="Sound" data-cookies-key="sound"></div>
+    <div id="check_auto" class="ui compact inverted toggleable button">Autoplay</div>
+  </div>
+</div>
+
+<div class="float hand">
+  <div class="turns list" id="candidates_list"></div>
+  <div class="ui grid" style="max-width:40em;margin:auto">
+    <div class="eleven wide column" style="padding:0">
+      <div class="uno cards ground" id="cards_ground"></div>
+    </div>
+    <div class="four wide column" style="padding:0">
+      <h2 class="ui inverted header" id="countdown_timer"></h2>
+      <div class="ui inverted vertical compact icon menu" id="action_menu">
+        <div class="item" id="button_wait"><i class="icon wait"></i></div>
+        <div class="item" id="button_drawone" onclick="send_message('drawone')" style="cursor:pointer;">Draw</div>
+        <div class="item" id="button_punish" onclick="send_message('accept_punish')" style="cursor:pointer;">Punish</div>
+        <div class="item" id="button_pass" onclick="send_message('pass')" style="cursor:pointer;"><i class="icon right arrow"></i></div>
+        <div class="item" id="button_auto" onclick="send_message('auto')" style="cursor:pointer;">Auto</div>
+      </div>
+    </div>
+  </div><br>
+  <div class="horzontial scroll" id="horzontial_scroller" style="margin-top:-1em">
+    <div class="uno cards stack hand" id="hand_pool"></div>
+  </div>
+</div>
+
+</div>
+{% end %}
+
+{% block script %}
+<script>
+/*=== Vars =============================================*/
+var cards_ground = $('#cards_ground');
+var hand_pool = $('#hand_pool');
+var messages_pool = $('#messages_pool');
+var candidates_list = $('#candidates_list');
+var scoreboard_list = $('#scoreboard_players_list');
+var gameover_scoreboard_list = $('#gameover_scoreboard_list');
+var check_auto = $('#check_auto');
+var check_sound = $('check_sound');
+
+var new_message_amount = 0;
+var message_notifier = $('#message_notifier');
+
+var tab_chat = $('#tab_chat');
+var tab_options = $('#tab_options');
+var tab_scoreboard = $('#tab_scoreboard');
+
+/* Game Infos */
+var punish_stack = 0;
+var punish_level = 0;
+var is_myturn = false;
+
+/* Game Infos */
+var color_select_id = undefined;
+
+var countdown_timer = $('#countdown_timer');
+var countdown_num = 0;
+var countdown_func = undefined;
+var countdown_run = false;
+
+/* WebSocket */
+var socket = undefined;
+var socket_url = 'ws:'+window.location.href.split(':')[1]+'/ws';
+var connect_trys = 0;
+
+/*=== Cards =============================================*/
+function create_card(card_repr,size)
+{
+  size = size || 'normal';
+  return $('<img class="uno '+size+' card" src="/static/cards/'+card_repr+'.png" repr="'+card_repr+'"/>')
+}
+function add_to_ground(card_repr)
+{
+  var card = create_card(card_repr,'small');
+  cards_ground.append(card);
+  setTimeout(function(){
+    if (cards_ground.children().length >= 5)
+      cards_ground.children()[0].remove();
+  }, 600);
+}
+function update_ground(card_reprs)
+{
+  cards_ground.empty();
+  $.each(card_reprs,function(i,repr){
+    cards_ground.append(create_card(repr,'small'));
+  });
+}
+function update_hand_cards(card_reprs)
+{
+  hand_pool.empty();
+  $.each(card_reprs,function(i,repr){
+    var card = create_card(repr).attr('card_id',i);
+    card.on('click',function(){playcard(card,i)});
+    hand_pool.append(card);
+  });
+}
+function playcard(card,id)
+{
+  if (is_myturn)
+  {
+    if (card.attr('repr')[0]=='S')
+      color_select_set(id);
+    else
+      send_message('play',{card_index:id});
+  }
+}
+
+function color_select_set(card_id)
+{
+  color_select_id = card_id;
+  $('#color_select_overlay').transition('fade in');
+}
+function color_select_play(color)
+{
+  if (color_select_id != undefined)
+    send_message('play',{card_index:color_select_id,user_color:color});
+  color_select_cancel();
+}
+function color_select_cancel()
+{
+  color_select_id = undefined;
+  $('#color_select_overlay').transition('fade out');
+}
+
+
+/*=== Messages =============================================*/
+function styled(text,color,style,size)
+{
+  color = color || '#fff';
+  style = style || 'normal';
+  size = size || '1em';
+  return '<span style="color:'+color+';font-style:'+style+';font-size:'+size+';">'+text+'</span>';
+}
+function display_info(message)
+{
+  messages_pool.append($('<p class="msg game">'+styled('System: '+message,'#999','italic')+'</p>'));
+  messages_pool.scrollTop(10000000);
+}
+function display_message(speaker,message)
+{
+  messages_pool.append($('<p class="msg user">'+speaker+': '+message+'</p>'));
+  refresh_message_notifier(1);
+  messages_pool.scrollTop(10000000);
+}
+function refresh_message_notifier(msg)
+{
+  if (tab_chat.hasClass('active'))
+    new_message_amount == 0;
+  else if (msg == 1)
+    new_message_amount ++;
+  else if (msg == 0)
+    new_message_amount = 0;
+  message_notifier.text(new_message_amount);
+  if (new_message_amount == 0)
+    message_notifier.hide();
+  else
+    message_notifier.show();
+}
+function send_chat(text)
+{
+  send_message('chat',{message:text});
+}
+
+/*=== States =============================================*/
+function set_punish(stack,level)
+{
+  punish_stack = stack;
+  punish_level = level;
+  $('#button_punish').text('+ '+stack);
+}
+function turn_others(turns)
+{
+  update_turns(turns);
+  // Reset the opeating buttons
+  $('#button_punish').hide();
+  $('#button_drawone').hide();
+  $('#button_pass').hide();
+  $('#button_auto').hide();
+  $('#button_wait').show()
+  // Dim the hand cards
+  $('#hand_pool').addClass('dim');
+  // Set flag
+  is_myturn = false;
+}
+function turn_my(punish_stack,punish_level,drawable)
+{
+  // Autoplay if enabled
+  if (check_auto.hasClass('active'))
+    setTimeout(function(){send_message('auto');},1400);
+  // Close the tap panels
+  $('[name="tab"]').removeClass('active');
+  $('[name="tab_page"]').removeClass('active');
+  // Reset the opeating buttons
+  $('#button_punish').hide();
+  $('#button_drawone').hide();
+  $('#button_pass').hide();
+  $('#button_auto').hide();
+  $('#button_wait').hide();
+  // Update punishment display
+  set_punish(punish_stack,punish_level);
+  // Set the timeout
+  //if (timeout != undefined && timeout > 0)
+  //  set_countdown(timeout,function(){send_message('auto')});
+  // Display buttons in different situation
+  if (punish_stack)
+  {
+    // Got Draw N punishments
+    $('#button_punish').show();
+    $('#button_auto').show();
+  }
+  else if (drawable)
+  {
+    // Normal
+    $('#button_drawone').show();
+    $('#button_auto').show();
+  }
+  else
+    // Already Draw One
+    $('#button_pass').show();
+  // Undim the hand cards
+  $('#hand_pool').removeClass('dim');
+  // Set flag
+  is_myturn = true;
+}
+function turn_nobody()
+{
+  $('#button_punish').hide();
+  $('#button_drawone').hide();
+  $('#button_pass').hide();
+  $('#button_auto').hide();
+  $('#button_wait').hide();
+  set_prev_color(0);
+  set_countdown(0);
+  update_ground(['SD4','B4','G3','Y2','R1']);
+  update_hand_cards([]);
+  candidates_list.html('<span>Waiting for game start...</span>');
+}
+function player_join(player) {
+  display_info(player+' joined.');
+}
+function player_left(player) {
+  display_info(player+' left.');
+}
+function game_start()
+{
+  display_info('Game start!');
+  update_ground([]);
+  if (!$('#gameover_overlay').hasClass('transition hidden'))
+    $('#gameover_overlay').transition('fade out');
+}
+function game_over(winner)
+{
+  turn_nobody();
+  $('#gameover_overlay [name=winner]').text(winner);
+  $('#gameover_overlay').transition('fade in');
+  $('#gameover_overlay [name=inner]').transition('tada')
+}
+/*=== Interfaces =============================================*/
+function upadte_candidates(player_names) {
+  candidates_list.empty();
+  $.each(player_names,function(i,n) {
+    n = n.split(':');
+    if (n.length == 1)
+      candidates_list.append('<span>'+n[0]+'</span>');
+    else if (n[1] == 1)
+      candidates_list.append('<span>'+n[0]+'<sup style="font-weight:bold;color:#E9BB29">UNO</sup></span>');
+    else
+      candidates_list.append('<span>'+n[0]+'<sup>'+n[1]+'</sup></span>');
+  });
+}
+function set_prev_color(color_id)
+{
+  color = ['','red','yellow','blue','green'][color_id];
+  $('#action_menu').removeClass('red yellow blue green').addClass(color);
+  $('#head_menu').removeClass('red yellow blue green').addClass(color);
+}
+function to_table_row(row) {
+  var r = '<tr>';
+  $.each(row,function(i,e) {
+    if (i==0)
+      r += '<td>'+e+'</td>';
+    else
+      r += '<td class="right aligned">'+e+'</td>';
+  });
+  r += '</tr>';
+  return r;
+}
+function update_turns(turns)
+{
+
+}
+function update_scoreboard(games_played,scores)
+{
+  scoreboard_list.empty();
+  $('#games_played').text(games_played);
+  $.each(scores,function(i,e){
+    scoreboard_list.append(to_table_row(e));
+  });
+}
+function update_gameover_scoreboard(scores)
+{
+  gameover_scoreboard_list.empty();
+  $.each(scores,function(i,e){
+    gameover_scoreboard_list.append(to_table_row(e));
+  });
+}
+function update_game_info(infos)
+{
+
+}
+function upadte_game_ready(game_ready,game_state_str,game_ready_players)
+{
+  if (msg.game_ready)
+    $('#button_start').removeClass('disabled').addClass('green').text('Start ('+game_ready_players+')');
+  else
+    $('#button_start').addClass('disabled').removeClass('green').text(game_state_str);
+  $('#game_infos_panel [name=game_state_str]').text(game_state_str);
+}
+function set_countdown(seconds,func)
+{
+  countdown_num = seconds;
+  countdown_func = func;
+  if (countdown_num <= 0)
+    countdown_timer.text('');
+  if (!countdown_run)
+    countdown_loop();
+}
+function countdown_loop()
+{
+  countdown_run = true;
+  countdown_timer.text(countdown_num);
+  countdown_num--;
+  if (countdown_num <= 0)
+  {
+    countdown_run = false;
+    countdown_timer.text('');
+    if (countdown_func)
+      countdown_func();
+  }
+  else
+    setTimeout(countdown_loop,1000);
+}
+function tab_toggle(element)
+{
+  element = $(element);
+  var page = $('[name="tab_page"][tab="'+element.attr('tab')+'"]');
+  var prev_state = page.hasClass('active');
+  $('[name="tab"]').removeClass('active');
+  $('[name="tab_page"]').removeClass('active');
+  if (prev_state == false)
+  {
+    page.addClass('active');
+    element.addClass('active');
+  }
+}
+
+function hand_pool_scroll(e) {
+  e = window.event || e;
+  var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+  $('#horzontial_scroller')[0].scrollLeft -= (delta*20); // Multiplied by 40
+  e.preventDefault();
+}
+
+/*=== Websocket =============================================*/
+function connect()
+{
+  connect_trys++;
+  socket = new WebSocket(socket_url);
+  socket.onmessage = ws_on_message;
+  socket.onclose = ws_on_close;
+  socket.onopen = ws_on_open;
+}
+function ws_on_open()
+{
+  $('#loading_overlay').transition('fade out');
+  if ({{room.state}} != 0)
+  {
+    send_message('recover');
+  }
+}
+function ws_on_close()
+{
+  $('#loading_overlay').transition('fade in');
+  if (connect_trys <= 0)
+  {
+    $('[name=loading_overlay_button]').hide();
+    $('#loading_overlay_text').html('Connecting');
+    setTimeout(connect,1000);
+  }
+  else
+  {
+    $('#loading_overlay_text').html('Connect failed<br>Please try again later');
+    $('[name=loading_overlay_button]').show();
+  }
+}
+function ws_on_message(msg_event)
+{
+  msg = JSON.parse(msg_event.data);
+  handle_message(msg);
+  console.log('GET',msg);
+}
+function send_message(action,obj)
+{
+  action = action || 'pong';
+  obj = obj || {};
+  obj.action = action;
+  socket.send(JSON.stringify(obj));
+  console.log('SEND',obj);
+}
+function handle_message(msg)
+{
+  if (msg.action == 'kick') window.location = '/';
+
+  // Common Selection
+  if (msg.game_ready != undefined)
+    upadte_game_ready(msg.game_ready,msg.game_state_str,msg.game_ready_players)
+
+  if (msg.candidates != undefined)  upadte_candidates(msg.candidates);
+  if (msg.ground != undefined)      update_ground(msg.ground);
+  if (msg.card_played != undefined) add_to_ground(msg.card_played);
+  if (msg.hand != undefined)        update_hand_cards(msg.hand);
+
+  if (msg.game_infos != undefined)  update_game_info(msg.game_infos);
+  if (msg.scoreboard != undefined)  update_scoreboard(msg.games_played,msg.scoreboard);
+  if (msg.gameover_scoreboard != undefined)  update_gameover_scoreboard(msg.gameover_scoreboard);
+  if (msg.players_online_list != undefined)  $('#game_infos_panel [name=players_online_list]').text(msg.players_online_list);
+
+  if (msg.turns != undefined)       turn_others(msg.turns);
+  if (msg.myturn != undefined)      turn_my(msg.punish_stack,msg.punish_level,msg.drawable);
+  if (msg.prev_color != undefined)  set_prev_color(msg.prev_color);
+  if (msg.countdown != undefined)   set_countdown(msg.countdown);
+
+  if (msg.system_msgs != undefined)     $.each(msg.system_msgs,function(i,e){display_info(e);});
+  if (msg.chat_msgs != undefined)       $.each(msg.chat_msgs,function(i,e){display_message(e[0],e[1]);});
+
+  if (msg.player_joined != undefined)   player_join(msg.player_joined);
+  if (msg.player_left != undefined)     player_left(msg.player_left);
+
+  if (msg.game_start != undefined)      game_start(msg.winner);
+  if (msg.gameover != undefined)        game_over(msg.winner);
+}
+
+/*=== Actions =============================================*/
+$('[name=loading_overlay_button]').hide();
+$('[name=tab]').on('click',function(){tab_toggle(this);});
+turn_nobody();
+connect();
+refresh_message_notifier();
+$('#send_input').on('keypress',function(e){
+    if (!e) e = window.event;
+    var keyCode = e.keyCode || e.which;
+    if (keyCode == '13'){
+      if (!$('#send_input').val()) return;
+      send_chat($('#send_input').val());
+      $('#send_input').val('');
+      return false;
+    }
+});
+$( window ).resize(function() {
+//TODO
+});
+$('#horzontial_scroller').bind('mousewheel DOMMouseScroll',hand_pool_scroll);
+</script>
+{% end %}

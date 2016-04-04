@@ -1,0 +1,56 @@
+{% extends base.html %}
+
+{% block title %}Create Room{% end %}
+
+{% block content %}
+<div class="ui main container">
+  <h1 class="ui inverted header">
+    Create Room
+  </h1>
+  <div class="ui inverted subtitle breadcrumb">
+    <a class="section" href="/">Lobby</a>
+    <div class="divider"> / </div>
+    <a class="active section" >Create</a>
+  </div>
+  <br>
+  <div class="ui small fluid action input" style="margin-bottom:1em;">
+    <input type="text" id="room_name_input" maxlength="12" placeholder="Room's name">
+    <div class="ui compact button" id="create">
+      Create
+    </div>
+  </div>
+  {% include 'includes/options.part.html' %}
+</div>
+{% end %}
+
+{% block script %}
+<script>
+var basic_name = '';
+var pretty_name = '';
+var name_input = $('#room_name_input');
+function update_input()
+{
+  basic_name = name_normalize(name_input.val());
+  pretty_name = name_prettify(basic_name);
+  if (name_vaild(basic_name))
+    $('#create').removeClass('disabled').addClass('blue').text('Create as "'+pretty_name+'"');
+  else
+    $('#create').addClass('disabled').removeClass('blue').text('Create');
+}
+function button_press()
+{
+  if (get_url_parameter('player'))
+    window.location = "/create/"+basic_name+"?player="+get_url_parameter('player');
+  else
+    window.location = "/create/"+basic_name;
+}
+name_input.on('input',update_input);
+name_input.keypress(function(e){if(e.keyCode==13) button_press();});
+
+$('#create').on('click',button_press);
+
+var default_name = get_url_parameter('room') || '';
+name_input.val(default_name);
+update_input()
+</script>
+{% end %}

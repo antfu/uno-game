@@ -1,0 +1,18 @@
+{% extends base.html %}
+
+{% block content %}
+<div class="phone">
+  <div class="camera"></div>
+  <div class="speaker"></div>
+  <div class="sleep-button"></div>
+  <div class="silent-switch"></div>
+  <div class="volume up"></div>
+  <div class="volume down"></div>
+  <div class="screen">
+    <div class="inner">
+    {% block phonescreen %}{% end %}
+    </div>
+  </div>
+  <div class="home-button"></div>
+</div>
+{% end %}

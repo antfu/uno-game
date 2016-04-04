@@ -1,0 +1,111 @@
+
+<div class="ui accordion">
+  <div class="title">
+    <h3 class="ui inverted header">
+      Options
+      <div class="sub header">
+      Basic room options
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <p style="display:block;color:#FF695E">
+      <i class="icon warning"></i>Room options will NOT effect for now.
+    </p>
+    <div class="toggleable active button"
+         data-active="Visible in Lobby"
+         data-inactive="Hide from Lobby"></div>
+    <div class="toggleable active button"
+         data-active="Allow watch"
+         data-inactive="No watcher"></div><br><br>
+    <div class="toggleable button"
+         data-active="A player can keep many<br>connections at same time"
+         data-inactive="A player can only keep 1 connection"></div><br>
+    <table class="ui inverted unstackable compact very basic table">
+      <tbody>
+        <tr><td>Min players</td><td>
+        <div class="ui buttons">
+          <div class="toggleable button active" data-value="2"  data-group="min_players">2</div>
+          <div class="toggleable button" data-value="3" data-group="min_players">3</div>
+          <div class="toggleable button" data-value="4" data-group="min_players">4</div>
+        </div>
+        </td></tr>
+        <tr><td>Max players</td><td>
+        <div class="ui buttons">
+          <div class="toggleable button" data-value="4" data-group="max_players">4</div>
+          <div class="toggleable button" data-value="6" data-group="max_players">6</div>
+          <div class="toggleable button" data-value="8" data-group="max_players">8</div>
+          <div class="toggleable button active" data-value="10" data-group="max_players">10</div>
+          <div class="toggleable button" data-value="12" data-group="max_players">12</div>
+        </div>
+        </td></tr>
+        <tr><td>Turn Timeout</td><td>
+        <div class="ui buttons">
+          <div class="toggleable button" data-value="15" data-group="turn_timeout">15s</div>
+          <div class="toggleable button active" data-value="30"  data-group="turn_timeout">30s</div>
+          <div class="toggleable button" data-value="45" data-group="turn_timeout">45s</div>
+          <div class="toggleable button" data-value="-1" data-group="turn_timeout">Free</div>
+        </div>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="title">
+    <h3 class="ui inverted header">
+      Game Rules
+      <div class="sub header">
+      Game rules of UNO for different needs
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <p style="display:block;color:#FF695E">
+      <i class="icon warning"></i>Rules will NOT effect for now.
+    </p>
+    <table class="ui inverted unstackable compact very basic table">
+      <tbody>
+        <tr><td>Cards Deal</td><td>
+        <div class="ui buttons">
+          <div class="toggleable button" data-value="5" data-group="cards_deal">5</div>
+          <div class="toggleable button active" data-value="7" data-group="cards_deal">7</div>
+          <div class="toggleable button" data-value="14" data-group="cards_deal">14</div>
+        </div>
+        </td></tr>
+      </tbody>
+    </table>
+    <div class="toggleable button"
+         data-active="Punish 2 cards when played<br>SPECIAL card as last card"
+         data-inactive="Allow play SPECIAL card as last card"></div><br><br>
+    <div class="toggleable button"
+         data-active="Continue play the game till<br>only one person has cards"
+         data-inactive="Gameover once someone<br>gets rid of all his/her cards"></div><br><br>
+    <div class="toggleable button"
+         data-active="The 'Draw N' punishments<br>is Unstackable"
+         data-inactive="The 'Draw N' punishments is stackable"></div><br><br>
+    <div class="toggleable button"
+         data-active="Able to break in when player have<br>the SAME card with last played card"
+         data-inactive="Cannot break in"></div><br><br>
+  </div>
+
+  <div class="title">
+    <h3 class="ui inverted header">
+      Blank Cards
+      <div class="sub header">
+      Special cards customized by room hoster
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <p style="display:block;color:#FF695E">
+      <i class="icon warning"></i>The blank cards function is not supported for now.
+    </p>
+    <div class="ui buttons">
+      <div class="toggleable active button" data-value="0" data-group="blank_cards">No blank card</div>
+      <div class="toggleable button" data-value="1" data-group="blank_cards">1</div>
+      <div class="toggleable button" data-value="2" data-group="blank_cards">2</div>
+      <div class="toggleable button" data-value="3" data-group="blank_cards">3</div>
+      <div class="toggleable button" data-value="4" data-group="blank_cards">4</div>
+    </div>
+  </div>
+</div>
