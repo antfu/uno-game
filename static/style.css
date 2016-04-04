@@ -271,6 +271,7 @@ a:hover
 }
 .tab.segment
 {
+  position: relative;
   margin:0;
   overflow-y:auto;
   border-radius: 0;

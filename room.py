@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 02:56:17
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-04 17:11:42
+# @Last Modified time: 2016-04-04 18:10:02
 
 import uno
 import json
@@ -17,7 +17,7 @@ default_options = {
     'allow_watch' : True,
     'protected' : False,
     'password' : None,
-    'join_singleton' : True,
+    'join_singleton' : False,
     'min_players' : 2,
     'max_players' : 10,
     'turn_timeout': 30
@@ -34,6 +34,7 @@ class RoomPlayer:
         self.score = 0
         self.prev_score = None
         self.wins = 0
+        self.played = 0
         self.is_ingame = False
         self.timer = None
 
@@ -138,6 +139,7 @@ class RoomPlayer:
         if self.game_player:
             if self.game_player.score > 0:
                 self.wins += 1
+            self.played += 1
             self.score += self.game_player.score
             self.prev_score = self.game_player.score
 
@@ -317,13 +319,13 @@ class Room:
 
     def shutdown(self):
         self.boardcast('kick')
+        self.room_players={}
         self.end()
 
     def end(self):
         self.state = 0
         self.game = None
         self.game_players=[]
-        self.room_players={}
         self.games_played=0
 
 

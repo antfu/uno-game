@@ -77,11 +77,13 @@
   </div>
 
   <div class="ui inverted tab segment" name="tab_page" tab="chat">
-    <div class="vertical scroll" id="messages_pool" style="margin-bottom:1em;max-height:55%"></div>
+    <div style="position: absolute;bottom:0;left:0;right:0;padding:1em;background:#111;">
     <div class="ui transparent inverted left icon fluid input" id="send_input_div">
         <i class="icon send "></i>
         <input type="text" id="send_input" placeholder="Enter Message..." autocomplete=off>
     </div>
+    </div>
+    <div class="vertical scroll" id="messages_pool" style="padding-bottom:2.5em;max-height:55%"></div>
   </div>
 
   <div class="ui inverted tab segment" name="tab_page" tab="scoreboard">
