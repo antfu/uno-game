@@ -363,7 +363,7 @@ sup.candidates.uno
 {
   margin:0;
   width: 100%;
-  background-color:#111;
+  background-color:#111 !important;
   -webkit-transition: background-color 0.5s ease-out;
      -moz-transition: background-color 0.5s ease-out;
       -ms-transition: background-color 0.5s ease-out;

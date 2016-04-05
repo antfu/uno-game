@@ -2,7 +2,7 @@
 * @Author: Anthony
 * @Date:   2016-04-03 00:06:20
 * @Last Modified by:   Anthony
-* @Last Modified time: 2016-04-03 12:04:21
+* @Last Modified time: 2016-04-06 03:04:27
 */
 
 'use strict';
@@ -17,7 +17,7 @@ function access_cookies(key,value)
   if (value == undefined)
     return settings[key];
   settings[key]=value;
-  return Cookies.set('uno_settings',settings,{path: '/'});
+  return Cookies.set('uno_settings',settings,{ expires: 90 });
 }
 
 /*=== Url parameter ===*/
