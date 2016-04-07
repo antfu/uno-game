@@ -495,3 +495,8 @@ sup.candidates.uno
 {
   float:right;
 }
+#gameover_scoreboard_list tr:nth-child(1)
+{
+  font-weight: bold;
+  color: #ffe066;
+}

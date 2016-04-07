@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 12:48:58
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-05 02:19:44
+# @Last Modified time: 2016-04-08 00:15:25
 
 import sys
 import json
@@ -86,6 +86,11 @@ class room_restart_handler(base_room_handler):
         # TODO
         self.redirect('/room/'+room_name)
 
+class room_clear_handler(base_room_handler):
+    def get(self,room_name):
+        if not self.get_room(room_name): return
+        self.room.clear_scoreboard()
+        self.redirect('/room/'+room_name)
 
 class player_handler(base_room_handler):
     def get(self,room_name,player_name):
@@ -112,6 +117,7 @@ app = tornado.web.Application(
         (r'/room/(\w+)/options',options_handler),
         (r'/room/(\w+)/close',room_close_handler),
         (r'/room/(\w+)/restart',room_restart_handler),
+        (r'/room/(\w+)/clear',room_clear_handler),
         (r'/room/(\w+)/player/(\w+)',player_handler),
         (r'/room/(\w+)/player/(\w+)/ws',websocket.ws_player),
         (r'.*',not_found_handler)

@@ -1,2 +1,2 @@
 @echo off
-python monitor.py server.py
+python monitor.py uno_server.py

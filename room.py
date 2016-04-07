@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 02:56:17
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-05 01:35:22
+# @Last Modified time: 2016-04-08 00:53:00
 
 import uno
 import json
@@ -118,6 +118,7 @@ class RoomPlayer:
     def connect(self,ws):
         self.sockets.append(ws)
         self.room.bc_player_join(self)
+        self.room.new_pipe().scoreboard().messageto(self)
 
     def disconnect(self,ws):
         try:
@@ -143,6 +144,12 @@ class RoomPlayer:
             self.played += 1
             self.score += self.game_player.score
             self.prev_score = self.game_player.score
+
+    def clear_score(self):
+        self.played = 0
+        self.wins = 0
+        self.score = 0
+        self.prev_score = 0
 
     def on_change(self):
         self.room.new_pipe().hand(self).messageto(self)
@@ -257,6 +264,11 @@ class Room:
             return False
         return True
 
+    def clear_scoreboard(self):
+        for p in self.room_players:
+            p.clear_score()
+        self.new_pipe().scoreboard().boardcast()
+
     def start(self,force=False):
         if force:
             if len(self.players_online) < 2:
@@ -327,7 +339,8 @@ class Room:
         self.state = 0
         self.game = None
         self.game_players=[]
-        self.games_played=0
+        self.games_played = 0
+        self.clear_scoreboard()
 
 
     ################################
@@ -426,8 +439,11 @@ class MessagePipe:
                         for x in self.room.game.candidates])
 
     def scoreboard(self):
-        scoreboard = [(p.display_name,p.prev_score or 0,p.wins or 0,p.score or 0)
-                        for p in self.room.players]
+        scoreboard = [(p.display_name,
+                       p.prev_score or 0,
+                       str(p.wins or 0) + '/' + str(p.played or 0),
+                       p.score or 0)
+                        for p in self.room.players if p.played]
         return self.append(games_played=self.room.games_played,
                            scoreboard=sorted(scoreboard,key=lambda x:x[3],reverse=True))
 

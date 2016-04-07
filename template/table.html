@@ -112,7 +112,7 @@
 
     {% include 'includes/info.table.part.html' %}
 
-    <div class="ui accordion">
+    <div class="ui accordion" id="scoreboard_accordion">
       <div class="title">
         <h4 class="ui inverted header">
           <i class="icon dropdown"></i>
@@ -214,10 +214,8 @@ function add_to_ground(card_repr)
 {
   var card = create_card(card_repr,'small');
   cards_ground.append(card);
-  setTimeout(function(){
-    if (cards_ground.children().length >= 5)
-      cards_ground.children()[0].remove();
-  }, 600);
+  if (cards_ground.children().length > 5)
+    setTimeout(function(){if (cards_ground.children().length > 5) cards_ground.children()[0].remove();}, 600);
 }
 function update_ground(card_reprs)
 {
@@ -419,22 +417,27 @@ function to_table_row(row) {
     if (i==0)
       r += '<td>'+e+'</td>';
     else
-      r += '<td class="right aligned">'+e+'</td>';
+      r += '<td class="right aligned">'+(e||'')+'</td>';
   });
   r += '</tr>';
   return r;
 }
 function update_turns(turns)
 {
-
 }
 function update_scoreboard(games_played,scores)
 {
   scoreboard_list.empty();
   $('#games_played').text(games_played);
-  $.each(scores,function(i,e){
-    scoreboard_list.append(to_table_row(e));
-  });
+  if(scores.length)
+  {
+    $.each(scores,function(i,e){
+      scoreboard_list.append(to_table_row(e));
+    });
+    $('#scoreboard_accordion').show()
+  }
+  else
+    $('#scoreboard_accordion').hide()
 }
 function update_gameover_scoreboard(scores)
 {
@@ -442,6 +445,8 @@ function update_gameover_scoreboard(scores)
   $.each(scores,function(i,e){
     gameover_scoreboard_list.append(to_table_row(e));
   });
+  var winner = gameover_scoreboard_list.find('tr').first().find('td').first();
+  if (winner) winner.html('<i class="icon trophy"></i> ' + winner.text());
 }
 function update_game_info(infos)
 {
@@ -537,7 +542,8 @@ function ws_on_message(msg_event)
 {
   msg = JSON.parse(msg_event.data);
   handle_message(msg);
-  console.log('GET',msg);
+  if (window.location.hash == '#debug')
+    console.log('GET',msg);
 }
 function send_message(action,obj)
 {
@@ -545,7 +551,8 @@ function send_message(action,obj)
   obj = obj || {};
   obj.action = action;
   socket.send(JSON.stringify(obj));
-  console.log('SEND',obj);
+  if (window.location.hash == '#debug')
+    console.log('SEND',obj);
 }
 function handle_message(msg)
 {
