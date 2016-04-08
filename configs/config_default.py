@@ -8,6 +8,7 @@ Default configurations.
 configs = {
     'port' : 80,
     'root' : '',
+    'chat_root' : '',
     'room_max_limit' : 10,
-    'default_rooms' : ['centaurs','neptune','uranus','saturn']
+    'default_rooms' : ['centaurs','neptune']
 }

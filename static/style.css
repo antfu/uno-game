@@ -300,7 +300,7 @@ a:hover
   margin:0;
   overflow-y:auto;
   border-radius: 0;
-  max-height: 70%;
+  max-height: 95%;
   background: #111;
 }
 .ui.checkbox label
@@ -499,4 +499,12 @@ sup.candidates.uno
 {
   font-weight: bold;
   color: #ffe066;
+}
+#chat_iframe
+{
+  margin:0;
+  border:none;
+  height:90%;
+  width:100%;
+  resize:vertical;
 }

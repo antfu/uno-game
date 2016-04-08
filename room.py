@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 02:56:17
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-08 00:53:00
+# @Last Modified time: 2016-04-08 20:36:51
 
 import uno
 import json
@@ -265,7 +265,7 @@ class Room:
         return True
 
     def clear_scoreboard(self):
-        for p in self.room_players:
+        for p in self.room_players.values():
             p.clear_score()
         self.new_pipe().scoreboard().boardcast()
 

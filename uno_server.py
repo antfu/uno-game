@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 12:48:58
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-08 00:15:25
+# @Last Modified time: 2016-04-08 20:26:47
 
 import sys
 import json
@@ -19,7 +19,7 @@ class base_handler(tornado.web.RequestHandler):
     def get_template_namespace(self):
         ns = super(base_handler, self).get_template_namespace()
         ns.update({
-            'root': configs.root,
+            'root': configs.root
         })
         return ns
 
@@ -97,7 +97,7 @@ class player_handler(base_room_handler):
         if not self.get_room(room_name): return
         p = self.room.join(player_name)
         if p:
-            self.render('table.html',room=self.room,player=p)
+            self.render('table.html',room=self.room,player=p,chat_root=configs.chat_root)
         else:
             self.redirect_param('/room/'+room_name,msg=repr(p))
 

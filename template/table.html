@@ -3,7 +3,40 @@
 {% block title %}Room {{room.display_name}}{% end %}
 
 {% block meta %}
-<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+<style>
+/* cyrillic */
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/c28rH3kclCLEuIsGhOg7evY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/RdfS2KomDWXvet4_dZQehvY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/9NqNYV_LP7zlAF8jHr7f1vY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/cycBf3mfbGkh66G5NhszPQ.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+</style>
 {% end %}
 
 {% block content %}
@@ -32,7 +65,7 @@
 <div class="float overlay transition hidden" id="gameover_overlay"
      style="z-index:1000;background:rgba(0,0,0,0.75)!important;overflow:auto;padding-bottom:3em;
 }">
-  <div style="margin-top:30%" name="inner">
+  <div style="margin-top:10em" name="inner">
     <div class="gameover title">Gameover!</div>
     <div class="gameover sub title">Winner: <span name="winner"></span></div>
     <table style="display:inline;" class="ui inverted unstackable very basic collapsing table">
@@ -58,7 +91,7 @@
 <!--Function Panel-->
 <div class="float function panel" style="z-index:100">
   <div class="ui inverted secondary pointing icon function menu" id="head_menu">
-    <a class="fitted item" name="tab" tab="chat" id="tab_chat" onclick="refresh_message_notifier(0)">
+    <a class="fitted item" name="tab" tab="chat" id="tab_chat" onclick="refresh_message_notifier(0);chat_windows.clear_notify();">
       <i class="large icon comments"></i>
       <div id="message_notifier" class="floating small ui red label"
            style="margin-top:1.5em !important;margin-left:-2.5em !important;"></div>
@@ -75,14 +108,15 @@
     </div>
   </div>
 
-  <div class="ui inverted tab segment" name="tab_page" tab="chat">
-    <div style="position: absolute;bottom:0;left:0;right:0;padding:1em;background:#222;">
+  <div class="ui inverted tab segment" name="tab_page" tab="chat" style="padding:0;">
+    <!--<div style="position: absolute;bottom:0;left:0;right:0;padding:1em;background:#222;">
     <div class="ui transparent inverted left icon fluid input" id="send_input_div">
         <i class="icon send "></i>
         <input type="text" id="send_input" placeholder="Enter Message..." autocomplete=off>
     </div>
     </div>
-    <div class="vertical scroll" id="messages_pool" style="padding-bottom:2.5em;max-height:55%"></div>
+    <div class="vertical scroll" id="messages_pool" style="padding-bottom:2.5em;max-height:55%"></div>-->
+    <iframe id="chat_iframe"></iframe>
   </div>
 
   <div class="ui inverted tab segment" name="tab_page" tab="options">
@@ -176,7 +210,11 @@ var candidates_list = $('#candidates_list');
 var scoreboard_list = $('#scoreboard_players_list');
 var gameover_scoreboard_list = $('#gameover_scoreboard_list');
 var check_auto = $('#check_auto');
-var check_sound = $('check_sound');
+var check_sound = $('#check_sound');
+var chat_src = '{{chat_root}}/__uno_{{room.name}}?hide_date&user='+encodeURIComponent('{{player.display_name}}');
+if (get_url_parameter('debug')) chat_src+= '&debug';
+var chat_iframe = $('#chat_iframe').attr('src',chat_src);
+var chat_windows = chat_iframe[0].contentWindow;
 
 var new_message_amount = 0;
 var message_notifier = $('#message_notifier');
@@ -189,9 +227,8 @@ var tab_scoreboard = $('#tab_scoreboard');
 var punish_stack = 0;
 var punish_level = 0;
 var is_myturn = false;
-
-/* Game Infos */
 var color_select_id = undefined;
+var game_turns = 0;
 
 var countdown_timer = $('#countdown_timer');
 var countdown_num = 0;
@@ -201,7 +238,7 @@ var countdown_run = false;
 /* WebSocket */
 var socket = undefined;
 var socket_protocol = window.location.protocol == 'https:' ? 'wss:' : 'ws:';
-var socket_url = socket_protocol+window.location.href.split(':')[1]+'/ws';
+var socket_url = socket_protocol+'//'+window.location.host+window.location.pathname+'/ws';
 var connect_trys = 0;
 
 /*=== Cards =============================================*/
@@ -272,23 +309,18 @@ function styled(text,color,style,size)
 }
 function display_info(message)
 {
-  messages_pool.append($('<p class="msg game">'+styled('System: '+message,'#999','italic')+'</p>'));
-  messages_pool.scrollTop(10000000);
+  if (chat_windows.display_message)
+    chat_windows.display_message('', styled(message,'rgba(255,255,255,0.5)','italic'), styled('@','rgba(255,255,255,0.4)'));
+  else
+    setTimeout(function(){display_info(message);},600);
 }
 function display_message(speaker,message)
 {
-  messages_pool.append($('<p class="msg user">'+speaker+': '+message+'</p>'));
-  refresh_message_notifier(1);
-  messages_pool.scrollTop(10000000);
+  chat_windows.display_message('', message, speaker);
+  chat_windows.notify();
 }
-function refresh_message_notifier(msg)
+function refresh_message_notifier(new_message_amount)
 {
-  if (tab_chat.hasClass('active'))
-    new_message_amount == 0;
-  else if (msg == 1)
-    new_message_amount ++;
-  else if (msg == 0)
-    new_message_amount = 0;
   message_notifier.text(new_message_amount);
   if (new_message_amount == 0)
     message_notifier.hide();
@@ -356,6 +388,7 @@ function turn_my(punish_stack,punish_level,drawable)
     $('#button_pass').show();
   // Undim the hand cards
   $('#hand_pool').removeClass('dim');
+  display_info('Your turn ['+game_turns+']');
   // Set flag
   is_myturn = true;
 }
@@ -367,6 +400,7 @@ function turn_nobody()
   $('#button_auto').hide();
   set_prev_color(0);
   set_countdown(0);
+  update_turns(0);
   update_ground([]);
   update_hand_cards([]);
   candidates_list.html('');
@@ -424,6 +458,7 @@ function to_table_row(row) {
 }
 function update_turns(turns)
 {
+  game_turns = turns;
 }
 function update_scoreboard(games_played,scores)
 {
@@ -514,7 +549,7 @@ function connect()
   socket.onclose = ws_on_close;
   socket.onopen = ws_on_open;
 }
-function ws_on_open()
+function ws_on_open(event)
 {
   $('#loading_overlay').transition('fade out');
   if ({{room.state}} != 0)
@@ -522,8 +557,10 @@ function ws_on_open()
     $('.waiting.panel').addClass('transition hidden');
     send_message('recover');
   }
+  if (get_url_parameter('debug'))
+    console.log('WS Open',event);
 }
-function ws_on_close()
+function ws_on_close(event)
 {
   $('#loading_overlay').transition('fade in');
   if (connect_trys <= 0)
@@ -537,12 +574,14 @@ function ws_on_close()
     $('#loading_overlay_text').html('Connection lost<br>Please try again later');
     $('[name=loading_overlay_button]').show();
   }
+  if (get_url_parameter('debug'))
+    console.log('WS Close',event);
 }
 function ws_on_message(msg_event)
 {
   msg = JSON.parse(msg_event.data);
   handle_message(msg);
-  if (window.location.hash == '#debug')
+  if (get_url_parameter('debug'))
     console.log('GET',msg);
 }
 function send_message(action,obj)
@@ -551,7 +590,7 @@ function send_message(action,obj)
   obj = obj || {};
   obj.action = action;
   socket.send(JSON.stringify(obj));
-  if (window.location.hash == '#debug')
+  if (get_url_parameter('debug'))
     console.log('SEND',obj);
 }
 function handle_message(msg)
@@ -592,7 +631,7 @@ $('[name=loading_overlay_button]').hide();
 $('[name=tab]').on('click',function(){tab_toggle(this);});
 turn_nobody();
 connect();
-refresh_message_notifier();
+refresh_message_notifier(0);
 $('#send_input').on('keypress',function(e){
     if (!e) e = window.event;
     var keyCode = e.keyCode || e.which;
@@ -603,9 +642,12 @@ $('#send_input').on('keypress',function(e){
       return false;
     }
 });
-$( window ).resize(function() {
-//TODO
-});
 $('#horzontial_scroller').bind('mousewheel DOMMouseScroll',hand_pool_scroll);
+$(function(){
+  setTimeout(function(){
+    chat_windows.outer_notify = function(count){refresh_message_notifier(count);};
+    chat_windows.outer_focus  = function(){return tab_chat.hasClass('active')};
+  },2000);
+});
 </script>
 {% end %}
