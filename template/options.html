@@ -8,17 +8,17 @@
     Options
   </h1>
   <div class="ui inverted subtitle breadcrumb">
-    <a class="section" href="{{root}}/">Lobby</a>
+    <a class="section" href="/">Lobby</a>
     <div class="divider"> / </div>
-    <a class="section" href="{{root}}/room/{{room.name}}">{{room.display_name}}</a>
+    <a class="section" href="/room/{{room.name}}">{{room.display_name}}</a>
     <div class="divider"> / </div>
     <div class="active section">Options</div>
   </div>
 
   <h3>Controls</h3>
-  <a class="ui inverted orange compact button" href="{{root}}/room/{{room.name}}/restart">Restart</a>
-  <a class="ui inverted red compact button" href="{{root}}/room/{{room.name}}/close">Close Room</a>
-  <a class="ui inverted olive compact button" href="{{root}}/room/{{room.name}}/clear">Clear Scoreboard</a>
+  <a class="ui inverted orange compact button" href="/room/{{room.name}}/restart">Restart</a>
+  <a class="ui inverted red compact button" href="/room/{{room.name}}/close">Close Room</a>
+  <a class="ui inverted olive compact button" href="/room/{{room.name}}/clear">Clear Scoreboard</a>
   <br><br>
 </div>
 {% end %}

@@ -2,43 +2,6 @@
 
 {% block title %}Room {{room.display_name}}{% end %}
 
-{% block meta %}
-<style>
-/* cyrillic */
-@font-face {
-  font-family: 'Lobster';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/c28rH3kclCLEuIsGhOg7evY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Lobster';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/RdfS2KomDWXvet4_dZQehvY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Lobster';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/9NqNYV_LP7zlAF8jHr7f1vY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Lobster';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/cycBf3mfbGkh66G5NhszPQ.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-</style>
-{% end %}
-
 {% block content %}
 <div class="mobile frame">
 
@@ -54,7 +17,7 @@
       Refresh
     </div>
     <br><br>
-    <a name="loading_overlay_button" href="{{root}}/">
+    <a name="loading_overlay_button" href="/">
       <i class="icon right angle"></i> Back to lobby
     </a>
     </div>
@@ -133,13 +96,13 @@
       Navigation
       <div class="sub header" style="margin-top:0.4em">
         <div class="ui inverted breadcrumb">
-          <a class="section" href="{{root}}/">Lobby</a>
+          <a class="section" href="/">Lobby</a>
           <div class="divider"> / </div>
-          <a class="section" href="{{root}}/room/{{room.name}}">{{room.display_name}}</a>
+          <a class="section" href="/room/{{room.name}}">{{room.display_name}}</a>
           <div class="divider"> / </div>
           <div class="active section">{{player.display_name}}</div>
           <i class="right angle icon divider"></i>
-          <a class="section" href="{{root}}/room/{{room.name}}/options">Options</a>
+          <a class="section" href="/room/{{room.name}}/options">Options</a>
         </div>
       </div>
     </h4>
@@ -169,11 +132,11 @@
 
 <div class="float center waiting panel">
   <div class="uno cards ground">
-    <img class="uno card" src="{{root}}/static/cards/SD4.png" repr="SD4">
-    <img class="uno card" src="{{root}}/static/cards/B4.png"  repr="B4">
-    <img class="uno card" src="{{root}}/static/cards/G3.png"  repr="G3">
-    <img class="uno card" src="{{root}}/static/cards/Y2.png"  repr="Y2">
-    <img class="uno card" src="{{root}}/static/cards/R1.png"  repr="R1">
+    <img class="uno card" src="/static/cards/SD4.png" repr="SD4">
+    <img class="uno card" src="/static/cards/B4.png"  repr="B4">
+    <img class="uno card" src="/static/cards/G3.png"  repr="G3">
+    <img class="uno card" src="/static/cards/Y2.png"  repr="Y2">
+    <img class="uno card" src="/static/cards/R1.png"  repr="R1">
   </div>
   <div class="text">
     <p>Waiting for game to start...<p>
@@ -245,7 +208,7 @@ var connect_trys = 0;
 function create_card(card_repr,size)
 {
   size = size || 'normal';
-  return $('<img class="uno '+size+' card" src="{{root}}/static/cards/'+card_repr+'.png" repr="'+card_repr+'"/>')
+  return $('<img class="uno '+size+' card" src="/static/cards/'+card_repr+'.png" repr="'+card_repr+'"/>')
 }
 function add_to_ground(card_repr)
 {
@@ -595,7 +558,7 @@ function send_message(action,obj)
 }
 function handle_message(msg)
 {
-  if (msg.action == 'kick') window.location = '{{root}}/';
+  if (msg.action == 'kick') window.location = '/';
 
   // Common Selection
   if (msg.game_ready != undefined)

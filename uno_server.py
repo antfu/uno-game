@@ -2,7 +2,7 @@
 # @Author: Anthony
 # @Date:   2016-03-30 12:48:58
 # @Last Modified by:   Anthony
-# @Last Modified time: 2016-04-08 20:26:47
+# @Last Modified time: 2016-04-11 11:59:55
 
 import sys
 import json
@@ -16,15 +16,8 @@ from   configs.config   import configs
 from room import rooms
 
 class base_handler(tornado.web.RequestHandler):
-    def get_template_namespace(self):
-        ns = super(base_handler, self).get_template_namespace()
-        ns.update({
-            'root': configs.root
-        })
-        return ns
-
     def redirect(self,url):
-        super().redirect(configs.root+url)
+        super().redirect(url)
 
     def redirect_param(self,url,**params):
         if params:

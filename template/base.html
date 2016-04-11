@@ -3,16 +3,16 @@
 <head>
 <title>{% block full_title %}{% block title %}{% end %} - UNO GAME{% end %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel='shortcut icon' type='image/x-icon' href='{{root}}/static/favicon.ico' />
+<link rel='shortcut icon' type='image/x-icon' href='/static/favicon.ico' />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.0/js.cookie.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
 
-<script src="{{root}}{{ static_url("js/utils.js") }}"></script>
-<script src="{{root}}{{ static_url("js/toggleable.button.js") }}"></script>
-<link rel="stylesheet" type="text/css" href="{{root}}{{ static_url("style.css") }}">
+<script src="{{ static_url("js/utils.js") }}"></script>
+<script src="{{ static_url("js/toggleable.button.js") }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ static_url("style.css") }}">
 {% block meta %}{% end %}
 </head>
 <body>

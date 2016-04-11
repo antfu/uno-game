@@ -8,11 +8,11 @@
     {{room.display_name}}
   </h1>
   <div class="ui inverted subtitle breadcrumb">
-    <a class="section" href="{{root}}/">Lobby</a>
+    <a class="section" href="/">Lobby</a>
     <div class="divider"> / </div>
     <a class="active section" >{{room.display_name}}</a>
     <div class="divider"> / </div>
-    <a class="section" href="{{root}}/room/{{room.name}}/options">Options</a>
+    <a class="section" href="/room/{{room.name}}/options">Options</a>
   </div>
   <br>
   {% include includes/urlmessage.part.html %}
@@ -49,7 +49,7 @@ function update_input()
 function button_press()
 {
   access_cookies('previous_name',basic_name);
-  window.location = "{{root}}/room/{{room.name}}/player/"+basic_name;
+  window.location = "/room/{{room.name}}/player/"+basic_name;
 }
 name_input.on('input',update_input);
 name_input.keypress(function(e){if(e.keyCode==13) button_press();});

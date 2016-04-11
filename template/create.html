@@ -8,7 +8,7 @@
     Create Room
   </h1>
   <div class="ui inverted subtitle breadcrumb">
-    <a class="section" href="{{root}}/">Lobby</a>
+    <a class="section" href="/">Lobby</a>
     <div class="divider"> / </div>
     <a class="active section" >Create</a>
   </div>
@@ -41,9 +41,9 @@ function update_input()
 function button_press()
 {
   if (get_url_parameter('player'))
-    window.location = "{{root}}/create/"+basic_name+"?player="+get_url_parameter('player');
+    window.location = "/create/"+basic_name+"?player="+get_url_parameter('player');
   else
-    window.location = "{{root}}/create/"+basic_name;
+    window.location = "/create/"+basic_name;
 }
 name_input.on('input',update_input);
 name_input.keypress(function(e){if(e.keyCode==13) button_press();});
