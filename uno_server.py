@@ -76,6 +76,7 @@ class room_close_handler(base_room_handler):
 class room_restart_handler(base_room_handler):
     def get(self,room_name):
         if not self.get_room(room_name): return
+        self.room.shutdown()
         # TODO
         self.redirect('/room/'+room_name)
 

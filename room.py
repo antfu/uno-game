@@ -340,7 +340,7 @@ class Room:
         self.game = None
         self.game_players=[]
         self.games_played = 0
-        self.clear_scoreboard()
+        #self.clear_scoreboard()
 
 
     ################################
