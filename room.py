@@ -367,7 +367,7 @@ class Room:
         self.new_pipe().gameover(x).scoreboard().boardcast()
         for p in self.players:
             p.on_gameover()
-        self.end()
+        #self.end()
 
     def on_player_changed(self,player):
         pass
