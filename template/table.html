@@ -26,8 +26,7 @@
 
 <!--Hints Overlay-->
 <div class="float overlay transition hidden" id="gameover_overlay"
-     style="z-index:1000;background:rgba(0,0,0,0.75)!important;overflow:auto;padding-bottom:3em;
-}">
+     style="z-index:1000;background:rgba(0,0,0,0.75)!important;overflow:auto;padding-bottom:3em;">
   <div style="margin-top:10em" name="inner">
     <div class="gameover title">Gameover!</div>
     <div class="gameover sub title">Winner: <span name="winner"></span></div>
@@ -72,13 +71,6 @@
   </div>
 
   <div class="ui inverted tab segment" name="tab_page" tab="chat" style="padding:0;">
-    <!--<div style="position: absolute;bottom:0;left:0;right:0;padding:1em;background:#222;">
-    <div class="ui transparent inverted left icon fluid input" id="send_input_div">
-        <i class="icon send "></i>
-        <input type="text" id="send_input" placeholder="Enter Message..." autocomplete=off>
-    </div>
-    </div>
-    <div class="vertical scroll" id="messages_pool" style="padding-bottom:2.5em;max-height:55%"></div>-->
     <iframe id="chat_iframe"></iframe>
   </div>
 
@@ -263,6 +255,7 @@ function color_select_cancel()
 
 
 /*=== Messages =============================================*/
+// Generate styled span element
 function styled(text,color,style,size)
 {
   color = color || '#fff';
@@ -270,6 +263,7 @@ function styled(text,color,style,size)
   size = size || '1em';
   return '<span style="color:'+color+';font-style:'+style+';font-size:'+size+';">'+text+'</span>';
 }
+// Send message to chat window locally
 function display_info(message)
 {
   if (chat_windows.display_message)
@@ -277,11 +271,13 @@ function display_info(message)
   else
     setTimeout(function(){display_info(message);},600);
 }
+// Send info message to chat window locally
 function display_message(speaker,message)
 {
   chat_windows.display_message('', message, speaker);
   chat_windows.notify();
 }
+// Update or Clear the chat message notifier
 function refresh_message_notifier(new_message_amount)
 {
   message_notifier.text(new_message_amount);
@@ -289,10 +285,6 @@ function refresh_message_notifier(new_message_amount)
     message_notifier.hide();
   else
     message_notifier.show();
-}
-function send_chat(text)
-{
-  send_message('chat',{message:text});
 }
 
 /*=== States =============================================*/
@@ -302,6 +294,7 @@ function set_punish(stack,level)
   punish_level = level;
   $('#button_punish').text('+ '+stack);
 }
+// others turn UI update
 function turn_others(turns)
 {
   update_turns(turns);
@@ -310,11 +303,13 @@ function turn_others(turns)
   $('#button_drawone').hide();
   $('#button_pass').hide();
   $('#button_auto').hide();
+  $('#action_menu').hide();
   // Dim the hand cards
   $('#hand_pool').addClass('dim');
   // Set flag
   is_myturn = false;
 }
+// player turn UI update
 function turn_my(punish_stack,punish_level,drawable)
 {
   // Autoplay if enabled
@@ -349,6 +344,8 @@ function turn_my(punish_stack,punish_level,drawable)
   else
     // Already Draw One
     $('#button_pass').show();
+  // Display the Action menu
+  $('#action_menu').show();
   // Undim the hand cards
   $('#hand_pool').removeClass('dim');
   display_info('Your turn ['+game_turns+']');
@@ -396,17 +393,17 @@ function upadte_candidates(player_names) {
   $.each(player_names,function(i,n) {
     n = n.split(':');
     if (n.length == 1)
-      candidates_list.append('<span>'+n[0]+'</span>');
+      candidates_list.append('<div>'+n[0]+'</div>');
     else if (n[1] == 1)
-      candidates_list.append('<span>'+n[0]+'<sup class="candidates uno">Uno</sup></span>');
+      candidates_list.append('<div>'+n[0]+'<sup class="candidates uno">Uno</sup></div>');
     else
-      candidates_list.append('<span>'+n[0]+'<sup class="candidates">'+n[1]+'</sup></span>');
+      candidates_list.append('<div>'+n[0]+'<sup class="candidates">'+n[1]+'</sup></div>');
   });
 }
 function set_prev_color(color_id)
 {
   color = ['','back_red','back_yellow','back_blue','back_green'][color_id];
-  $('#head_menu').removeClass('back_red back_yellow back_blue back_green').addClass(color);
+  $('#head_menu,#action_menu').removeClass('back_red back_yellow back_blue back_green').addClass(color);
 }
 function to_table_row(row) {
   var r = '<tr>';
@@ -448,7 +445,7 @@ function update_gameover_scoreboard(scores)
 }
 function update_game_info(infos)
 {
-
+  console.log("Info",infos);
 }
 function upadte_game_ready(game_ready,game_state_str,game_ready_players)
 {
@@ -585,26 +582,17 @@ function handle_message(msg)
   if (msg.player_joined != undefined)   player_join(msg.player_joined);
   if (msg.player_left != undefined)     player_left(msg.player_left);
 
-  if (msg.gamestart != undefined)      game_start();
+  if (msg.gamestart != undefined)       game_start();
   if (msg.gameover != undefined)        game_over(msg.winner);
 }
 
 /*=== Actions =============================================*/
 $('[name=loading_overlay_button]').hide();
+$('#action_menu').hide();
 $('[name=tab]').on('click',function(){tab_toggle(this);});
 turn_nobody();
 connect();
 refresh_message_notifier(0);
-$('#send_input').on('keypress',function(e){
-    if (!e) e = window.event;
-    var keyCode = e.keyCode || e.which;
-    if (keyCode == '13'){
-      if (!$('#send_input').val()) return;
-      send_chat($('#send_input').val());
-      $('#send_input').val('');
-      return false;
-    }
-});
 $('#horzontial_scroller').bind('mousewheel DOMMouseScroll',hand_pool_scroll);
 $(function(){
   setTimeout(function(){

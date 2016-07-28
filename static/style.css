@@ -315,29 +315,39 @@ a:hover
   text-align:center;
   white-space: nowrap;
 }
-.turns.list span
+.turns.list div
 {
-  color:#888;
-  font-size:0.9em;
+  display: inline-block;
+  font-weight:bold;
   margin:0 0.2em;
 }
-.turns.list span:nth-child(2)
+.turns.list div:nth-child(1)
+{
+  color:#888;
+  font-size:0.8em;
+}
+.turns.list div:nth-child(2)
 {
   color:#999;
-  font-weight:bold;
-  font-size:1.1em;
+  font-size:1em;
 }
-.turns.list span:nth-child(3)
+.turns.list div:nth-child(3)
 {
   color:#fff;
   font-weight:bold;
   font-size:1.3em;
 }
-.turns.list span:nth-child(4)
+.turns.list div:nth-child(4)
 {
   color:#999;
   font-weight:bold;
-  font-size:1.1em;
+  font-size:1em;
+}
+.turns.list div:nth-child(5)
+{
+  color:#999;
+  font-weight:bold;
+  font-size:0.8em;
 }
 .msg
 {
@@ -376,24 +386,24 @@ sup.candidates.uno
   font-family: 'Lobster', sans-serif !important;
   font-size: 1.2em;
   padding-left: 0em !important;
-  padding-right: 1.6em !important;
+  padding-right: 1em !important;
   padding-bottom: 0.8em !important;
   color: white !important;
   vertical-align: center;
 }
-.function.menu.back_red
+.function.menu.back_red, .action.menu.back_red
 {
   background-color:#ff5555 !important;
 }
-.function.menu.back_yellow
+.function.menu.back_yellow, .action.menu.back_yellow
 {
   background-color:#e69900 !important;
 }
-.function.menu.back_blue
+.function.menu.back_blue, .action.menu.back_blue
 {
   background-color:#55afff !important;
 }
-.function.menu.back_green
+.function.menu.back_green, .action.menu.back_green
 {
   background-color:#55aa55 !important;
 }

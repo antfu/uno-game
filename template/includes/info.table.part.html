@@ -16,7 +16,7 @@ var infos_panel = {};
 infos_panel.game_state = function(game_start_str)
 {
   var targets = $('[info="game_state_str"]').text(game_start_str).removeClass('orange yellow red blue teal green olive');
-  if (game_start_str=='Matching')       targets.addClass('yellow');
+  if (game_start_str=='Waiting')        targets.addClass('yellow');
   else if (game_start_str=='Ready')     targets.addClass('green');
   else if (game_start_str=='Gaming')    targets.addClass('blue');
   else if (game_start_str=='Full')      targets.addClass('orange');
@@ -27,4 +27,3 @@ infos_panel.players_online = function(players_online_list)
 }
 infos_panel.game_state('{{room.state_str}}');
 </script>
-

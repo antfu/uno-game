@@ -218,7 +218,7 @@ class Room:
             if self.onlines == 0:
                 return 'Empty'
             elif self.onlines < self.min_players:
-                return 'Matching'
+                return 'Waiting'
             elif self.onlines >= self.max_players:
                 return 'Full'
             else:
