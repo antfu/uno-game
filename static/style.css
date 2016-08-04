@@ -223,6 +223,20 @@ a:hover
   width:15em;
   opacity:0.2;
 }
+#notify_panel
+{
+  margin: 0;
+  width: 100%;
+  color: #fff;
+  padding: 0.9em 1em;
+}
+#notify_panel p
+{
+  vertical-align: center;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
 .float.overlay
 {
   position:absolute;

@@ -126,6 +126,26 @@ function refresh_message_notifier(new_message_amount)
   else
     message_notifier.show();
 }
+function notify(sender,msg)
+{
+  navigator.vibrate(20);
+  var text = $('<p></p>');
+  if (sender)
+    text.text(sender + ': ' + msg);
+  else if (msg)
+    text.text(msg);
+  else
+    return;
+
+  $('#notify_panel p').remove();
+  $('#notify_panel').prepend(text);
+  text.transition('fade up in');
+  setTimeout(function() {
+    text.transition('fade up out',function() {
+      text.remove();
+    });
+  }, 2000);
+}
 
 /*=== States =============================================*/
 function set_punish(stack,level)
@@ -213,9 +233,11 @@ function turn_nobody()
 }
 function player_join(player) {
   display_info(player+' joined.');
+  notify('', player+' joined.');
 }
 function player_left(player) {
   display_info(player+' left.');
+  notify('', player+' left.');
 }
 function game_start()
 {
@@ -322,7 +344,7 @@ function countdown_loop()
   if (countdown_num <= 0)
   {
     countdown_run = false;
-    countdown_timer.html('<div class="ui active inline mini loader"></div>');
+    countdown_timer.html('');
     if (countdown_func)
       countdown_func();
   }
@@ -446,6 +468,7 @@ refresh_message_notifier(0);
 $('#horzontial_scroller').bind('mousewheel DOMMouseScroll',hand_pool_scroll);
 $(function(){
   setTimeout(function(){
+    chat_windows.outer_message  = function(sender,msg){notify(sender,msg)};
     chat_windows.outer_notify = function(count){refresh_message_notifier(count);};
     chat_windows.outer_focus  = function(){return tab_chat.hasClass('active')};
   },2000);
