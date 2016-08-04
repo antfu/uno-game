@@ -128,7 +128,7 @@ function refresh_message_notifier(new_message_amount)
 }
 function notify(sender,msg)
 {
-  navigator.vibrate(20);
+  navigator.vibrate(50);
   var text = $('<p></p>');
   if (sender)
     text.text(sender + ': ' + msg);
