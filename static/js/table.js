@@ -139,6 +139,8 @@ function turn_others(turns)
 {
   update_turns(turns);
   // Reset the opeating buttons
+  if (!$('.action-menu').hasClass('hidden'))
+    $('.action-menu').transition('fade left out');
   $('#button_punish').hide();
   $('#button_drawone').hide();
   $('#button_pass').hide();
@@ -188,6 +190,7 @@ function turn_my(punish_stack,punish_level,drawable)
   $('#action_menu').show();
   // Undim the hand cards
   $('#hand_pool').removeClass('dim');
+  $('.action-menu').transition('fade left in');
   display_info('Your turn ['+game_turns+']');
   // Set flag
   is_myturn = true;
@@ -224,6 +227,7 @@ function game_over(winner)
   turn_nobody();
   $('.waiting.panel').transition('fade in');
   $('#gameover_overlay [name=winner]').text(winner);
+  $('.action-menu').transition('fade left out');
   $('#gameover_overlay').transition('fade in');
   $('#gameover_overlay [name=inner]').transition('tada')
 }
@@ -242,8 +246,10 @@ function upadte_candidates(player_names) {
 }
 function set_prev_color(color_id)
 {
-  color = ['','back_red','back_yellow','back_blue','back_green'][color_id];
-  $('#head_menu,#action_menu').removeClass('back_red back_yellow back_blue back_green').addClass(color);
+  var color = ['','back_red','back_yellow','back_blue','back_green'][color_id];
+  var name = ['','Red','Yellow','Blue','Green'][color_id];
+  $('#head_menu,#action-color').removeClass('back_red back_yellow back_blue back_green').addClass(color);
+  $('.action-dot-text').text(name);
 }
 function to_table_row(row) {
   var r = '<tr>';
@@ -312,7 +318,7 @@ function countdown_loop()
   if (countdown_num <= 0)
   {
     countdown_run = false;
-    countdown_timer.html('');
+    countdown_timer.html('<div class="ui active inline mini loader"></div>');
     if (countdown_func)
       countdown_func();
   }

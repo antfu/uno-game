@@ -230,10 +230,16 @@ a:hover
   top:0;
   left:0;
   right:0;
-  bottom:0;
   text-align: center;
   vertical-align: middle;
   z-index:100000;
+}
+.float.action-menu
+{
+  z-index: 1000;
+  position:absolute;
+  right:-2em;
+  bottom: 10em;
 }
 .float.center
 {
@@ -380,30 +386,69 @@ sup.candidates.uno
        -o-transition: background-color 0.5s ease-out;
           transition: background-color 0.5s ease-out;
 }
+.action-menu .menu
+{
+  background: #eee;
+  -webkit-box-shadow: 1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+  box-shadow:         1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+}
 .action.menu .item
 {
   cursor:pointer;
   font-family: 'Lobster', sans-serif !important;
-  font-size: 1.2em;
-  padding-left: 0em !important;
-  padding-right: 1em !important;
-  padding-bottom: 0.8em !important;
-  color: white !important;
+  font-size: 1.3em;
   vertical-align: center;
+  color: #fff !important;
 }
-.function.menu.back_red, .action.menu.back_red
+.action-menu .item
+{
+  cursor:pointer;
+  font-family: 'Lobster', sans-serif !important;
+  font-size: 1em;
+  vertical-align: center;
+  color: #222 !important;
+  background: #333;
+}
+.action-dot
+{
+  width: 1em;
+  height: 1em;
+  border-radius: 1em;
+}
+.action-dot-text
+{
+  margin: 0 0.5em;
+}
+.back_red .action-dot-text
+{
+  color:#ff5555 !important;
+}
+.back_yellow .action-dot-text
+{
+  color:#e69900 !important;
+}
+.back_blue .action-dot-text
+{
+  color:#55afff !important;
+}
+.back_green .action-dot-text
+{
+  color:#55aa55 !important;
+}
+.function.menu.back_red, .back_red .action-dot
 {
   background-color:#ff5555 !important;
 }
-.function.menu.back_yellow, .action.menu.back_yellow
+.function.menu.back_yellow, .back_yellow .action-dot
 {
   background-color:#e69900 !important;
 }
-.function.menu.back_blue, .action.menu.back_blue
+.function.menu.back_blue, .back_blue .action-dot
 {
   background-color:#55afff !important;
 }
-.function.menu.back_green, .action.menu.back_green
+.function.menu.back_green, .back_green .action-dot
 {
   background-color:#55aa55 !important;
 }
