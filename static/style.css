@@ -236,7 +236,7 @@ a:hover
 }
 .float.action-menu
 {
-  z-index: 1000;
+  z-index: 100;
   position:absolute;
   right: 0;
   left:  0;
