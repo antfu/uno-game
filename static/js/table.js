@@ -140,7 +140,7 @@ function turn_others(turns)
   update_turns(turns);
   // Reset the opeating buttons
   if (!$('.action-menu').hasClass('hidden'))
-    $('.action-menu').transition('fade left out');
+    $('.action-menu').transition('fade down out');
   $('#button_punish').hide();
   $('#button_drawone').hide();
   $('#button_pass').hide();
@@ -190,10 +190,13 @@ function turn_my(punish_stack,punish_level,drawable)
   $('#action_menu').show();
   // Undim the hand cards
   $('#hand_pool').removeClass('dim');
-  $('.action-menu').transition('fade left in');
+  if ($('.action-menu').hasClass('hidden'))
+    $('.action-menu').transition('swing down in');
   display_info('Your turn ['+game_turns+']');
   // Set flag
   is_myturn = true;
+  // Vibrate
+  navigator.vibrate(100);
 }
 function turn_nobody()
 {
@@ -227,7 +230,8 @@ function game_over(winner)
   turn_nobody();
   $('.waiting.panel').transition('fade in');
   $('#gameover_overlay [name=winner]').text(winner);
-  $('.action-menu').transition('fade left out');
+  if (!$('.action-menu').hasClass('hidden'))
+    $('.action-menu').transition('fade down out');
   $('#gameover_overlay').transition('fade in');
   $('#gameover_overlay [name=inner]').transition('tada')
 }

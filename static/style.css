@@ -238,7 +238,8 @@ a:hover
 {
   z-index: 1000;
   position:absolute;
-  right:-2em;
+  right: 0;
+  left:  0;
   bottom: 10em;
 }
 .float.center
@@ -386,12 +387,9 @@ sup.candidates.uno
        -o-transition: background-color 0.5s ease-out;
           transition: background-color 0.5s ease-out;
 }
-.action-menu .menu
+#countdown_timer
 {
-  background: #eee;
-  -webkit-box-shadow: 1px 1px 10px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow:    1px 1px 10px 0px rgba(50, 50, 50, 0.75);
-  box-shadow:         1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+  padding: 0.7em 1.2em;
 }
 .action.menu .item
 {
@@ -401,24 +399,32 @@ sup.candidates.uno
   vertical-align: center;
   color: #fff !important;
 }
-.action-menu .item
+.action-menu .button
 {
   cursor:pointer;
   font-family: 'Lobster', sans-serif !important;
   font-size: 1em;
   vertical-align: center;
-  color: #222 !important;
-  background: #333;
+  /*color: #222 !important;
+  background-color: #ddd !important;*/
+  -webkit-box-shadow: 1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+  box-shadow:         1px 1px 10px 0px rgba(50, 50, 50, 0.75);
+}
+#button_punish {
+  color: #ff5555 !important;
 }
 .action-dot
 {
-  width: 1em;
-  height: 1em;
+  width: 0.8em;
+  height: 0.8em;
   border-radius: 1em;
+  display: inline-block;
 }
 .action-dot-text
 {
   margin: 0 0.5em;
+  display: inline-block;
 }
 .back_red .action-dot-text
 {
