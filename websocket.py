@@ -77,7 +77,7 @@ class ws_player(tornado.websocket.WebSocketHandler):
             self.room.start()
         elif msg['action'] == 'play':
             if msg.get('card_index',None) is None: return
-            self.player.play(msg['card_index'],msg.get('user_color',None))
+            self.player.play(msg['card_index'], msg.get('user_color',None))
         elif msg['action'] == 'drawone':
             self.player.drawone()
         elif msg['action'] == 'accept_punish':

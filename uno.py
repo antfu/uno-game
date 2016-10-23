@@ -149,7 +149,8 @@ class Player:
         else:
             return False
 
-    def play(self,index,user_color=None):
+    def play(self, index, user_color=None):
+        index = int(index)
         if not self.game.playing: return False
         if not self.myturn: return False
         if index > len(self.hand) - 1: return False

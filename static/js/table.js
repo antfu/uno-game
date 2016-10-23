@@ -58,10 +58,13 @@ function update_ground(card_reprs)
 }
 function update_hand_cards(card_reprs)
 {
+  var clone = card_reprs.slice(0);
+  clone.sort();
   hand_pool.empty();
-  $.each(card_reprs,function(i,repr){
+  $.each(clone,function(_,repr){
+    var i = card_reprs.indexOf(repr);
     var card = create_card(repr).attr('card_id',i);
-    card.on('click',function(){playcard(card,i)});
+    card.on('click',function(){ playcard(card,i) });
     hand_pool.append(card);
   });
 }
@@ -69,10 +72,10 @@ function playcard(card,id)
 {
   if (is_myturn)
   {
-    if (card.attr('repr')[0]=='S')
+    if (card.attr('repr')[0] == 'S')
       color_select_set(id);
     else
-      send_message('play',{card_index:id});
+      send_message('play', {card_index:id});
   }
 }
 
@@ -106,10 +109,12 @@ function styled(text,color,style,size)
 // Send message to chat window locally
 function display_info(message)
 {
-  if (chat_windows.display_message)
-    chat_windows.display_message('', styled(message,'rgba(255,255,255,0.5)','italic'), styled('@','rgba(255,255,255,0.4)'));
-  else
-    setTimeout(function(){display_info(message);},600);
+  try {
+    if (chat_windows.display_message)
+      chat_windows.display_message('', styled(message,'rgba(255,255,255,0.5)','italic'), styled('@','rgba(255,255,255,0.4)'));
+    else
+      setTimeout(function(){display_info(message);},600);
+  } catch (err) {}
 }
 // Send info message to chat window locally
 function display_message(speaker,message)
@@ -468,8 +473,10 @@ refresh_message_notifier(0);
 $('#horzontial_scroller').bind('mousewheel DOMMouseScroll',hand_pool_scroll);
 $(function(){
   setTimeout(function(){
-    chat_windows.outer_message  = function(sender,msg){notify(sender,msg)};
-    chat_windows.outer_notify = function(count){refresh_message_notifier(count);};
-    chat_windows.outer_focus  = function(){return tab_chat.hasClass('active')};
+    try {
+      chat_windows.outer_message = function(sender,msg){notify(sender,msg)};
+      chat_windows.outer_notify  = function(count){refresh_message_notifier(count);};
+      chat_windows.outer_focus   = function(){return tab_chat.hasClass('active')};
+    } catch (err) {}
   },2000);
 });
