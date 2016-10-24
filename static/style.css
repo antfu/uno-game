@@ -332,7 +332,6 @@ a:hover
 }
 .turns.list
 {
-  font-family: sans-serif !important;
   color:#fff;
   margin:1em 1em;
   text-align:center;
@@ -340,6 +339,7 @@ a:hover
 }
 .turns.list div
 {
+  font-family: 'Lobster', sans-serif !important;
   display: inline-block;
   font-weight:bold;
   margin:0 0.2em;

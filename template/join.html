@@ -1,6 +1,6 @@
 {% extends base.html %}
 
-{% block title %}Join Room - {{room.display_name}}{% end %}
+{% block title %}Join {{room.display_name}}{% end %}
 
 {% block content %}
 <div class="ui main container">
@@ -14,13 +14,10 @@
     <div class="divider"> / </div>
     <a class="section" href="/room/{{room.name}}/options">Options</a>
   </div>
-  <br>
-  {% include includes/urlmessage.part.html %}
-  {% include includes/info.table.part.html %}
   <h3 class="ui inverted header">
-    Join the Room
+    Join
     <div class="sub header">
-    Enter a name below and join
+      Enter a name below and join
     </div>
   </h3>
   <div class="ui small fluid action input" style="margin-bottom:1em;">
@@ -29,6 +26,9 @@
       Join
     </div>
   </div>
+  <br>
+  {% include includes/urlmessage.part.html %}
+  {% include includes/info.table.part.html %}
 </div>
 {% end %}
 

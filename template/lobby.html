@@ -1,15 +1,24 @@
 {% extends base.html %}
 
-{% block full_title %}UNO GAME{% end %}
+{% block full_title %}Uno Game{% end %}
 
 {% block content %}
 <div class="ui main container">
-  <h1 class="ui inverted header">
-    UNO GAME
+  <h1 class="ui inverted header" style="text-align:center">
+    Uno Game
     <div class="sub header">
-    by Anthony Fu
+    by <a href="//antnf.com">Anthony Fu</a>
     </div>
   </h1>
+  <div class="panel" style="padding: 2em;">
+    <div class="uno cards ground" style="width: 15em;">
+      <img class="uno card" src="/static/cards/B4.png"  repr="B4">
+      <img class="uno card" src="/static/cards/G3.png"  repr="G3">
+      <img class="uno card" src="/static/cards/Y2.png"  repr="Y2">
+      <img class="uno card" src="/static/cards/R1.png"  repr="R1">
+      <img class="uno card" src="/static/cards/SD4.png" repr="SD4">
+    </div>
+  </div>
   {% include includes/urlmessage.part.html %}
   <h2 class="ui inverted header">
     Rooms
@@ -22,7 +31,7 @@
   <a href="/create"><i class="icon plus"></i>Create</a>
   </h3>
   <div>
-    <a class="ui inverted room disabled button">
+    <a class="ui inverted room disabled button" style="display:none">
     <span name="room_name">Quick Match</span><br>
     <span name="state">Not available for now</span>
     </a>
