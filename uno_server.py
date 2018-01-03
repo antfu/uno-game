@@ -124,7 +124,7 @@ app = tornado.web.Application(
     static_path='static',
     debug=True
 )
-print("Server started on " + configs.port)
+print("Server started on " + str(configs.port))
 http_server = tornado.httpserver.HTTPServer(app)
 http_server.listen(configs.port)
 tornado.ioloop.IOLoop.instance().start()
