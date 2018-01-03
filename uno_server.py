@@ -4,6 +4,7 @@
 # @Last Modified by:   Anthony
 # @Last Modified time: 2016-04-11 11:59:55
 
+import os
 import sys
 import json
 import tornado.web
@@ -99,6 +100,9 @@ class not_found_handler(base_room_handler):
     def get(self):
         self.render('404.html')
 
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
 args = sys.argv
 args.append("--log_file_prefix=logs/web.log")
 tornado.options.parse_command_line()
@@ -120,6 +124,7 @@ app = tornado.web.Application(
     static_path='static',
     debug=True
 )
+print("Server started on " + configs.port)
 http_server = tornado.httpserver.HTTPServer(app)
 http_server.listen(configs.port)
 tornado.ioloop.IOLoop.instance().start()
